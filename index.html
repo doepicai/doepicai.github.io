@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>doepic.ai: проекты, которые приятно использовать</title>
+<meta name="description" content="doepic.ai — личный сайт и витрина проектов: приложения, сервисы и эксперименты. Открытый код, без трекеров.">
+<meta property="og:title" content="doepic.ai">
+<meta property="og:description" content="Витрина моих проектов: приложения, сервисы и эксперименты.">
+<meta property="og:image" content="https://doepic.ai/img/social.png">
+<meta property="og:url" content="https://doepic.ai/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://doepic.ai/">
+<meta name="theme-color" content="#140a34">
+<style>
+:root{
+  --bg:#140a34;--bg2:#192556;--deep:#0d0624;
+  --ink:#fdf1ff;--muted:#cc9dd1;--dim:#8e729a;
+  --violet:#a251d5;--indigo:#4d339c;--blue:#759cea;
+  --cyan:#abf7ff;--mint:#3cffae;--magenta:#f386ff;
+  --pink:#ff87a7;--hot:#ff2e8a;--peach:#ffb49e;--sun:#faffc2;
+  --glass:rgba(253,241,255,.07);--glass2:rgba(253,241,255,.12);--line:rgba(253,241,255,.16);
+  --mono:"Cascadia Code","JetBrains Mono",ui-monospace,Consolas,"Courier New",monospace;
+  --sans:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.65 var(--sans);background:var(--bg);overflow-x:hidden}
+a{color:var(--cyan)}
+img{max-width:100%}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+
+/* ---------- ambient background ---------- */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:
+  radial-gradient(120% 70% at 50% -10%,#2a1d6b 0%,transparent 60%),
+  linear-gradient(180deg,var(--bg) 0%,#171a4a 55%,var(--bg2) 100%)}
+.bg i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;animation:drift 22s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:46vmax;height:46vmax;left:-14vmax;top:-10vmax;background:var(--indigo)}
+.bg i:nth-child(2){width:34vmax;height:34vmax;right:-10vmax;top:8vmax;background:#6c326e;opacity:.5;animation-duration:27s}
+.bg i:nth-child(3){width:30vmax;height:30vmax;left:30vw;bottom:-16vmax;background:#32767c;opacity:.38;animation-duration:31s}
+.bg:after{content:"";position:absolute;inset:0;background:radial-gradient(rgba(253,241,255,.07) 1px,transparent 1.2px) 0 0/30px 30px;-webkit-mask:linear-gradient(#000 0,transparent 75%);mask:linear-gradient(#000 0,transparent 75%)}
+@keyframes drift{to{transform:translate(5vmax,4vmax) scale(1.12)}}
+
+/* ---------- glass primitive ---------- */
+.glass{position:relative;background:linear-gradient(155deg,rgba(253,241,255,.13),rgba(253,241,255,.04) 45%,rgba(171,247,255,.05));
+  border-radius:24px;backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 -1px 0 rgba(255,255,255,.04) inset,0 24px 60px -20px rgba(8,2,30,.7)}
+.glass:before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(145deg,rgba(253,241,255,.7),rgba(171,247,255,.12) 35%,rgba(243,134,255,.1) 65%,rgba(171,247,255,.45));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:12px;z-index:20;margin:12px auto 0;max-width:1120px;padding:0 22px}
+nav .bar{display:flex;align-items:center;gap:6px;height:58px;padding:0 10px 0 14px;border-radius:999px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand img{width:34px;height:34px;filter:drop-shadow(0 4px 10px rgba(255,46,138,.35))}
+.word{font:700 19px/1 var(--mono);letter-spacing:-.4px;background:linear-gradient(100deg,var(--cyan),var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent}
+.word b{font-weight:700;background:linear-gradient(100deg,var(--peach),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav .sp{flex:1}
+nav a.l{color:var(--muted);text-decoration:none;font-size:14.5px;padding:8px 13px;border-radius:999px;transition:.2s}
+nav a.l:hover{color:var(--ink);background:var(--glass2)}
+.lang{border:1px solid var(--line);background:var(--glass);color:var(--muted);border-radius:999px;padding:6px 13px;cursor:pointer;font:600 13px var(--mono);transition:.2s}
+.lang:hover{color:var(--ink);border-color:var(--cyan)}
+@media(max-width:640px){nav a.l.hide{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:70px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:6px 14px;border-radius:999px;font:500 13px var(--mono);color:var(--cyan);margin-bottom:22px}
+.eyebrow:after{display:none}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);animation:pulse 2.4s infinite}
+@keyframes pulse{50%{opacity:.35}}
+h1{font:800 clamp(38px,6.2vw,70px)/1.04 var(--sans);letter-spacing:-1.8px;margin:0 0 18px}
+h1 span{background:linear-gradient(120deg,var(--hot) 0%,var(--pink) 30%,var(--peach) 60%,var(--sun));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 span.pl{background:none;color:var(--ink);-webkit-text-fill-color:var(--ink)}
+.sub{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:520px;margin:0 0 30px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:16px;font-weight:700;font-size:16px;text-decoration:none;color:var(--ink);transition:transform .2s,box-shadow .2s,border-color .2s;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(12px)}
+.btn:hover{transform:translateY(-2px);border-color:var(--cyan)}
+.btn.p{border:0;color:#2a0a30;background:linear-gradient(135deg,var(--peach),var(--pink) 55%,var(--magenta));box-shadow:0 12px 34px -8px rgba(255,46,138,.55),0 1px 0 rgba(255,255,255,.6) inset}
+.btn.p:hover{box-shadow:0 18px 44px -8px rgba(255,46,138,.75),0 1px 0 rgba(255,255,255,.6) inset}
+.btn svg{width:18px;height:18px;fill:currentColor}
+
+/* 3D scene */
+.scene{position:relative;height:440px;perspective:1100px;display:grid;place-items:center}
+.stack{position:relative;width:min(340px,80vw);aspect-ratio:1;transform-style:preserve-3d;transition:transform .25s ease-out;will-change:transform}
+.stack>*{position:absolute;transform-style:preserve-3d}
+.slab{inset:7% 3% -3% 7%;border-radius:20%;transform:translateZ(-70px);opacity:.85;
+  background:linear-gradient(150deg,rgba(171,247,255,.28),rgba(162,81,213,.2) 55%,rgba(255,135,167,.2));
+  border:1px solid rgba(253,241,255,.28);backdrop-filter:blur(10px);box-shadow:0 40px 80px -20px rgba(8,2,30,.8)}
+.slab.b{inset:-4% 10% 14% -6%;transform:translateZ(-150px);opacity:.5;border-color:rgba(171,247,255,.25)}
+.icon{inset:0;transform:translateZ(30px);filter:drop-shadow(0 28px 36px rgba(8,2,30,.65))}
+.icon img{width:100%;height:100%;display:block}
+.orb{border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.95) 0 6%,rgba(255,255,255,.35) 12%,transparent 34%),radial-gradient(circle at 50% 55%,var(--c1),var(--c2) 70%);
+  box-shadow:inset -8px -10px 24px rgba(8,2,30,.45),inset 6px 8px 16px rgba(255,255,255,.35),0 18px 30px -8px rgba(8,2,30,.55);animation:float 7s ease-in-out infinite}
+.orb.o1{--c1:var(--mint);--c2:#32767c;width:78px;height:78px;left:-9%;top:10%;transform:translateZ(110px)}
+.orb.o2{--c1:var(--magenta);--c2:var(--indigo);width:54px;height:54px;right:-5%;top:2%;transform:translateZ(150px);animation-delay:-2s}
+.orb.o3{--c1:var(--cyan);--c2:var(--blue);width:100px;height:100px;right:-12%;bottom:6%;transform:translateZ(90px);animation-delay:-4s}
+.orb.o4{--c1:var(--peach);--c2:var(--hot);width:38px;height:38px;left:6%;bottom:2%;transform:translateZ(140px);animation-delay:-1s}
+@keyframes float{50%{margin-top:-14px}}
+.ring{left:-16%;right:-16%;top:30%;bottom:-6%;border-radius:50%;border:1.5px solid rgba(171,247,255,.3);transform:translateZ(-120px);box-shadow:0 0 40px rgba(171,247,255,.15),inset 0 0 30px rgba(243,134,255,.12)}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.scene{height:360px;order:-1}.hero{padding-top:36px}}
+
+/* ---------- sections ---------- */
+section{padding:56px 0}
+.kicker{font:500 13px var(--mono);color:var(--mint);letter-spacing:.14em;text-transform:uppercase;margin:0 0 10px}
+h2{font:800 clamp(28px,4.2vw,42px)/1.12 var(--sans);letter-spacing:-.8px;margin:0 0 10px}
+.lead{color:var(--muted);max-width:620px;margin:0 0 30px}
+
+/* projects */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+.chips button{border:1px solid var(--line);background:var(--glass);color:var(--muted);padding:7px 16px;border-radius:999px;cursor:pointer;font:600 14px var(--sans);transition:.2s}
+.chips button:hover{color:var(--ink)}
+.chips button.on{background:linear-gradient(135deg,var(--peach),var(--pink));color:#2a0a30;border-color:transparent}
+.projects{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.proj{grid-column:span 6;display:flex;flex-direction:column;overflow:hidden;transform-style:preserve-3d;transition:transform .25s ease-out,box-shadow .3s}
+.proj.wide{grid-column:span 12;flex-direction:row}
+.proj .shot{position:relative;flex:1.15;min-height:240px;background:#0d0624 center/cover no-repeat;border-radius:inherit;border-top-right-radius:0;border-bottom-right-radius:0;overflow:hidden}
+.proj .shot:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,rgba(20,10,52,.85)),linear-gradient(180deg,rgba(255,255,255,.12),transparent 30%)}
+.proj .body{flex:1;padding:28px 28px 26px;display:flex;flex-direction:column;gap:10px;position:relative}
+.proj h3{margin:0;font:800 28px/1.15 var(--sans);letter-spacing:-.4px}
+.proj p{margin:0;color:var(--muted)}
+.tags{display:flex;gap:7px;flex-wrap:wrap}
+.tags span{font:500 12.5px var(--mono);color:var(--cyan);border:1px solid rgba(171,247,255,.28);background:rgba(171,247,255,.06);border-radius:999px;padding:3px 11px}
+.tags .live{color:#0b2a1e;background:var(--mint);border-color:transparent;font-weight:700}
+.links{margin-top:auto;padding-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.links .btn{padding:10px 18px;font-size:15px;border-radius:13px}
+.proj.soon{grid-column:span 12;align-items:center;justify-content:center;text-align:center;min-height:170px;padding:30px;opacity:.9}
+.proj.soon:before{display:none}
+.proj.soon{border:1.5px dashed rgba(253,241,255,.25)}
+.soon .plus{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;margin:0 auto 12px;font:300 34px/1 var(--sans);color:var(--cyan);background:var(--glass2);border:1px solid var(--line)}
+@media(max-width:860px){.proj,.proj.wide{grid-column:span 12}.proj.wide{flex-direction:column}.proj .shot{border-radius:inherit;border-bottom-left-radius:0;border-bottom-right-radius:0;min-height:200px}.proj .shot:after{background:linear-gradient(180deg,transparent 55%,rgba(20,10,52,.85))}}
+
+/* values */
+.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.val{padding:26px}
+.val .ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;margin-bottom:14px;background:linear-gradient(145deg,rgba(171,247,255,.3),rgba(162,81,213,.25));box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 10px 20px -8px rgba(8,2,30,.6)}
+.val .ic svg{width:24px;height:24px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.val h3{margin:0 0 6px;font-size:19px}
+.val p{margin:0;color:var(--muted);font-size:15px}
+
+/* contact */
+.contact{padding:38px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;justify-content:space-between;background:linear-gradient(135deg,rgba(255,135,167,.16),rgba(162,81,213,.14) 50%,rgba(171,247,255,.12))}
+.contact h2{font-size:clamp(24px,3.4vw,34px);margin:0 0 6px}
+.contact p{margin:0;color:var(--muted)}
+
+footer{padding:34px 0 46px;text-align:center;color:var(--dim);font-size:14px}
+footer a{color:var(--muted);text-decoration:none;margin:0 10px}
+footer a:hover{color:var(--cyan)}
+footer .word{font-size:15px}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<nav><div class="bar glass">
+  <a class="brand" href="#"><img src="img/logo.svg" alt=""><span class="word">doepic<b>.ai</b></span></a>
+  <div class="sp"></div>
+  <a class="l" href="#projects" data-i="nav_p">Проекты</a>
+  <a class="l hide" href="#about" data-i="nav_a">Принципы</a>
+  <a class="l hide" href="#contact" data-i="nav_c">Контакты</a>
+  <button class="lang" id="lang" aria-label="Language">EN</button>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <div class="eyebrow glass"><i></i><span data-i="eyebrow">Новые проекты по мере готовности</span></div>
+    <h1><span data-i="h1a">Проекты,</span> <span class="pl" data-i="h1b">которые приятно использовать</span></h1>
+    <p class="sub" data-i="sub">doepic.ai — мой дом в сети. Здесь я публикую приложения, сервисы и эксперименты: с открытым кодом, без трекеров и рекламы.</p>
+    <div class="cta">
+      <a class="btn p" href="#projects"><span data-i="cta1">Смотреть проекты</span><svg viewBox="0 0 24 24"><path d="M12 4l-1.4 1.4 5.6 5.6H4v2h12.2l-5.6 5.6L12 20l8-8z"/></svg></a>
+      <a class="btn" href="https://github.com/doepicai"><svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.200.7-3.900-1.500-3.900-1.500-.5-1.300-1.300-1.700-1.300-1.700-1-.7.100-.7.100-.7 1.200.1 1.800 1.200 1.800 1.200 1 1.800 2.800 1.300 3.400 1 .1-.8.400-1.300.7-1.600-2.600-.3-5.300-1.300-5.300-5.700 0-1.300.5-2.300 1.200-3.100-.1-.3-.5-1.500.1-3.100 0 0 1-.3 3.200 1.200a11 11 0 0 1 5.800 0c2.200-1.500 3.200-1.200 3.200-1.200.6 1.600.2 2.800.1 3.100.8.800 1.200 1.800 1.200 3.100 0 4.400-2.700 5.400-5.300 5.700.4.400.8 1.100.8 2.200v3.200c0 .3.200.7.800.6A11.500 11.500 0 0 0 12 .5z"/></svg>GitHub</a>
+    </div>
+  </div>
+  <div class="scene" id="scene" aria-hidden="true">
+    <div class="stack" id="stack">
+      <div class="ring"></div>
+      <div class="slab b"></div>
+      <div class="slab"></div>
+      <div class="icon"><img src="img/logo.svg" alt="" width="340" height="340"></div>
+      <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>
+    </div>
+  </div>
+</div></header>
+
+<section id="projects"><div class="wrap">
+  <p class="kicker" data-i="k_p">Проекты</p>
+  <h2 data-i="p_h">Что я делаю</h2>
+  <p class="lead" data-i="p_lead">Каждый проект живёт на своём поддомене и в своём репозитории. Эта витрина собирает их в одном месте.</p>
+  <div class="chips" id="chips"></div>
+  <div class="projects" id="projectList"></div>
+</div></section>
+
+<section id="about"><div class="wrap">
+  <p class="kicker" data-i="k_a">Принципы</p>
+  <h2 data-i="a_h">Как я делаю</h2>
+  <div class="vals" style="margin-top:22px">
+    <div class="val glass"><div class="ic"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></div><h3 data-i="v1h">Открытый код</h3><p data-i="v1p">Исходники проектов лежат на GitHub. Можно прочитать, проверить и предложить правку.</p></div>
+    <div class="val glass"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.400 8-8 9-4.600-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h3 data-i="v2h">Без трекеров</h3><p data-i="v2p">На этом сайте нет аналитики, рекламы и сторонних скриптов. Только страница и ваш браузер.</p></div>
+    <div class="val glass"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 data-i="v3h">Без спешки</h3><p data-i="v3p">Проекты выходят, когда готовы: сначала стабильность и аккуратные детали, потом новые функции.</p></div>
+  </div>
+</div></section>
+
+<section id="contact"><div class="wrap">
+  <div class="contact glass rv">
+    <div><h2 data-i="c_h">Следите за новыми проектами</h2><p data-i="c_p">Все релизы и код публикуются на GitHub. Ставьте звезду или подписывайтесь.</p></div>
+    <a class="btn p" href="https://github.com/doepicai">github.com/doepicai</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span class="word">doepic<b>.ai</b></span>
+  <div style="margin-top:10px"><a href="https://github.com/doepicai">GitHub</a>·<a href="https://vpn.doepic.ai">Wokok VPN</a></div>
+  <div style="margin-top:8px"><span data-i="foot">Сделано с любовью к деталям</span> · © <span id="yr"></span></div>
+</div></footer>
+
+<script>
+/* ============ ДОБАВЛЯЙТЕ ПРОЕКТЫ ЗДЕСЬ ============
+   Новый объект в массив PROJECTS, и карточка появится на сайте.
+   cat: app | web | tool | other. wide: true для крупной карточки.
+   image: путь к картинке в img/ (необязательно).
+   release: "owner/repo" для бейджа с последней версией (необязательно). */
+const PROJECTS=[
+ {id:"wokok",wide:true,cat:"app",image:"img/wokok-hero.jpg",release:"arsenikt/WokokVPN-App",
+  name:"Wokok VPN",
+  tags:["VPN","Flutter","sing-box","Open source"],
+  ru:"Свой VPN на своём сервере: VLESS Reality, SSH-резерв и умная маршрутизация. Windows, macOS, Android, iOS и расширение для Chrome.",
+  en:"Your own VPN on your own server: VLESS Reality, SSH fallback and smart routing. Windows, macOS, Android, iOS and a Chrome extension.",
+  links:[{ru:"Открыть сайт",en:"Open site",href:"https://vpn.doepic.ai",primary:true},{ru:"Код",en:"Source",href:"https://github.com/arsenikt/WokokVPN-App"}]}
+];
+
+const I={
+ru:{nav_p:"Проекты",nav_a:"Принципы",nav_c:"Контакты",eyebrow:"Новые проекты по мере готовности",h1a:"Проекты,",h1b:"которые приятно использовать",sub:"doepic.ai — мой дом в сети. Здесь я публикую приложения, сервисы и эксперименты: с открытым кодом, без трекеров и рекламы.",cta1:"Смотреть проекты",k_p:"Проекты",p_h:"Что я делаю",p_lead:"Каждый проект живёт на своём поддомене и в своём репозитории. Эта витрина собирает их в одном месте.",k_a:"Принципы",a_h:"Как я делаю",v1h:"Открытый код",v1p:"Исходники проектов лежат на GitHub. Можно прочитать, проверить и предложить правку.",v2h:"Без трекеров",v2p:"На этом сайте нет аналитики, рекламы и сторонних скриптов. Только страница и ваш браузер.",v3h:"Без спешки",v3p:"Проекты выходят, когда готовы: сначала стабильность и аккуратные детали, потом новые функции.",c_h:"Следите за новыми проектами",c_p:"Все релизы и код публикуются на GitHub. Ставьте звезду или подписывайтесь.",foot:"Сделано с любовью к деталям",
+ all:"Все",app:"Приложения",web:"Веб",tool:"Инструменты",other:"Другое",soon_h:"Следующий проект",soon_p:"Скоро здесь появится что-то новое.",ver:"Версия"},
+en:{nav_p:"Projects",nav_a:"Principles",nav_c:"Contact",eyebrow:"New projects when they're ready",h1a:"Projects",h1b:"that are a joy to use",sub:"doepic.ai is my home on the web. I publish apps, services and experiments here: open source, no trackers, no ads.",cta1:"See projects",k_p:"Projects",p_h:"What I build",p_lead:"Every project lives on its own subdomain and in its own repository. This page gathers them in one place.",k_a:"Principles",a_h:"How I build",v1h:"Open source",v1p:"Project sources live on GitHub. Read them, audit them, send a fix.",v2h:"No trackers",v2p:"This site has no analytics, ads or third-party scripts. Just the page and your browser.",v3h:"No rush",v3p:"Projects ship when they're ready: stability and careful details first, new features after.",c_h:"Follow new projects",c_p:"Every release and all the code is published on GitHub. Star it or follow along.",foot:"Made with love for details",
+ all:"All",app:"Apps",web:"Web",tool:"Tools",other:"Other",soon_h:"Next project",soon_p:"Something new will land here soon.",ver:"Version"}};
+let L=(localStorage.getItem("lang")||(navigator.language||"ru")).startsWith("ru")?"ru":"en";
+const t=k=>I[L][k]||k;
+let cat="all";
+
+function renderProjects(){
+  const cats=["all",...new Set(PROJECTS.map(p=>p.cat))];
+  const chips=document.querySelector("#chips");
+  chips.style.display=cats.length>2?"flex":"none";
+  chips.innerHTML="";
+  cats.forEach(c=>{const b=document.createElement("button");b.textContent=t(c);if(c===cat)b.className="on";b.onclick=()=>{cat=c;renderProjects()};chips.appendChild(b)});
+  const box=document.querySelector("#projectList"); box.innerHTML="";
+  PROJECTS.filter(p=>cat==="all"||p.cat===cat).forEach(p=>{
+    const c=document.createElement("article");
+    c.className="proj glass tilt"+(p.wide?" wide":"");
+    const shot=p.image?`<div class="shot" style="background-image:url('${p.image}')" role="img" aria-label="${p.name}"></div>`:"";
+    c.innerHTML=`${shot}<div class="body"><div class="tags" data-tags>${p.tags.map(x=>`<span>${x}</span>`).join("")}</div><h3>${p.name}</h3><p>${p[L]}</p><div class="links">${p.links.map(l=>`<a class="btn${l.primary?" p":""}" href="${l.href}">${l[L]}</a>`).join("")}</div></div>`;
+    box.appendChild(c);
+    if(p.release) badge(p,c);
+  });
+  if(cat==="all"){
+    const s=document.createElement("article");
+    s.className="proj glass soon";
+    s.innerHTML=`<div><div class="plus">+</div><h3 style="font-size:22px;margin:0 0 6px">${t("soon_h")}</h3><p>${t("soon_p")}</p></div>`;
+    box.appendChild(s);
+  }
+  bindTilt(); reveal();
+}
+async function badge(p,card){
+  try{
+    const r=await fetch(`https://api.github.com/repos/${p.release}/releases/latest`);
+    if(!r.ok) return;
+    const j=await r.json();
+    const tags=card.querySelector("[data-tags]");
+    tags.insertAdjacentHTML("afterbegin",`<span class="live">${t("ver")} ${String(j.tag_name).replace(/^v/,"")}</span>`);
+  }catch(_){}
+}
+
+function render(){
+  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
+  document.querySelector("#lang").textContent=L==="ru"?"EN":"RU";
+  document.documentElement.lang=L;
+  renderProjects();
+}
+document.querySelector("#lang").onclick=()=>{L=L==="ru"?"en":"ru";localStorage.setItem("lang",L);render()};
+document.querySelector("#yr").textContent=new Date().getFullYear();
+
+/* 3D parallax: hero scene + card tilt (fine pointers only) */
+const fine=matchMedia("(hover:hover) and (pointer:fine)").matches&&!matchMedia("(prefers-reduced-motion:reduce)").matches;
+const stack=document.querySelector("#stack"), scene=document.querySelector("#scene");
+if(fine){
+  addEventListener("pointermove",e=>{
+    const r=scene.getBoundingClientRect(); if(r.bottom<0||r.top>innerHeight) return;
+    const x=(e.clientX/innerWidth-.5), y=(e.clientY/innerHeight-.5);
+    stack.style.transform=`rotateY(${x*26}deg) rotateX(${-y*20}deg)`;
+  });
+  scene.addEventListener("pointerleave",()=>stack.style.transform="");
+}else{stack.style.transform="rotateY(-14deg) rotateX(8deg)"}
+function bindTilt(){
+  if(!fine) return;
+  document.querySelectorAll(".tilt").forEach(c=>{
+    c.onpointermove=e=>{const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      c.style.transform=`perspective(1000px) rotateY(${x*5}deg) rotateX(${-y*5}deg) translateY(-3px)`};
+    c.onpointerleave=()=>c.style.transform="";
+  });
+}
+const io="IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.1}):null;
+function reveal(){document.querySelectorAll(".proj,.val,.contact,section h2").forEach(e=>{if(!e.classList.contains("rv")){e.classList.add("rv");io?io.observe(e):e.classList.add("in")}})}
+render();
+</script>
+</body>
+</html>

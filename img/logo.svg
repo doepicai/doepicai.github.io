@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="doepic.ai">
+  <defs>
+    <linearGradient id="tile" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#759cea" stop-opacity=".55"/>
+      <stop offset=".45" stop-color="#4d339c" stop-opacity=".78"/>
+      <stop offset="1" stop-color="#140a34" stop-opacity=".95"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fdf1ff" stop-opacity=".85"/>
+      <stop offset=".35" stop-color="#abf7ff" stop-opacity=".18"/>
+      <stop offset=".7" stop-color="#f386ff" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#abf7ff" stop-opacity=".55"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf1ff" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#fdf1ff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".92" r=".95">
+      <stop offset="0" stop-color="#faffc2"/>
+      <stop offset=".38" stop-color="#ffb49e"/>
+      <stop offset=".75" stop-color="#ff87a7"/>
+      <stop offset="1" stop-color="#ff2e8a"/>
+    </radialGradient>
+    <linearGradient id="ray" gradientUnits="userSpaceOnUse" x1="128" y1="164" x2="128" y2="54">
+      <stop offset="0" stop-color="#ffb49e"/>
+      <stop offset="1" stop-color="#ff87a7"/>
+    </linearGradient>
+    <linearGradient id="hz" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff2e8a" stop-opacity="0"/>
+      <stop offset=".2" stop-color="#ff87a7"/>
+      <stop offset=".8" stop-color="#ffb49e"/>
+      <stop offset="1" stop-color="#ffb49e" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.2"/></filter>
+    <clipPath id="tileClip"><rect x="16" y="16" width="224" height="224" rx="58"/></clipPath>
+  </defs>
+  <!-- glass tile -->
+  <rect x="16" y="22" width="224" height="224" rx="58" fill="#0a0420" opacity=".55" filter="url(#glow)"/>
+  <rect x="16" y="16" width="224" height="224" rx="58" fill="url(#tile)"/>
+  <g clip-path="url(#tileClip)">
+    <ellipse cx="128" cy="16" rx="150" ry="92" fill="url(#gloss)"/>
+    <ellipse cx="128" cy="236" rx="120" ry="60" fill="#abf7ff" opacity=".10"/>
+  </g>
+  <rect x="17" y="17" width="222" height="222" rx="57" fill="none" stroke="url(#rim)" stroke-width="2"/>
+  <!-- sun glow -->
+  <circle cx="128" cy="164" r="64" fill="#ff87a7" opacity=".55" filter="url(#glow)"/>
+  <!-- rays -->
+  <g stroke="url(#ray)" stroke-width="11" stroke-linecap="round">
+    <line x1="199.5" y1="144.8" x2="218.8" y2="139.7"/>
+    <line x1="184.7" y1="116.4" x2="200" y2="103.6"/>
+    <line x1="159.3" y1="96.9" x2="172" y2="69.7"/>
+    <line x1="128" y1="90" x2="128" y2="52"/>
+    <line x1="96.7" y1="96.9" x2="84" y2="69.7"/>
+    <line x1="71.3" y1="116.4" x2="56" y2="103.6"/>
+    <line x1="56.5" y1="144.8" x2="37.2" y2="139.7"/>
+  </g>
+  <g stroke="#fdf1ff" stroke-opacity=".45" stroke-width="2.5" stroke-linecap="round" transform="translate(-1.5 -2)" opacity=".7">
+    <line x1="199.5" y1="144.8" x2="218.8" y2="139.7"/>
+    <line x1="184.7" y1="116.4" x2="200" y2="103.6"/>
+    <line x1="159.3" y1="96.9" x2="172" y2="69.7"/>
+    <line x1="128" y1="90" x2="128" y2="52"/>
+    <line x1="96.7" y1="96.9" x2="84" y2="69.7"/>
+    <line x1="71.3" y1="116.4" x2="56" y2="103.6"/>
+    <line x1="56.5" y1="144.8" x2="37.2" y2="139.7"/>
+  </g>
+  <!-- sun body -->
+  <path d="M70 164a58 58 0 0 1 116 0z" fill="url(#sun)"/>
+  <path d="M82 158a46 46 0 0 1 60-37" fill="none" stroke="#fdf1ff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round" filter="url(#soft)"/>
+  <path d="M70 164a58 58 0 0 1 116 0" fill="none" stroke="#fdf1ff" stroke-opacity=".5" stroke-width="1.5"/>
+  <!-- horizon + reflection -->
+  <rect x="44" y="169" width="168" height="9" rx="4.5" fill="url(#hz)"/>
+  <rect x="72" y="186" width="112" height="6" rx="3" fill="url(#hz)" opacity=".55"/>
+  <rect x="98" y="200" width="60" height="4.5" rx="2.2" fill="url(#hz)" opacity=".3"/>
+</svg>
