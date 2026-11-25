@@ -1,1 +1,20 @@
-{"layers":{},"glass":[]}
+{
+ "layers": {
+  "sky": "img/scene/sky.webp",
+  "sun": "img/scene/sun.webp",
+  "city-far": "img/scene/city-far.webp",
+  "city-mid": "img/scene/city-mid.webp",
+  "city-near": "img/scene/city-near.webp",
+  "water": "img/scene/water.webp"
+ },
+ "glass": [
+  "img/scene/glass-1.webp",
+  "img/scene/glass-2.webp",
+  "img/scene/glass-3.webp",
+  "img/scene/glass-4.webp",
+  "img/scene/glass-5.webp",
+  "img/scene/glass-6.webp",
+  "img/scene/glass-7.webp",
+  "img/scene/glass-8.webp"
+ ]
+}

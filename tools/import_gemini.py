@@ -1,4 +1,4 @@
-﻿"""Cut Gemini renders from gemini-raw/ into the layers the site uses.
+"""Cut Gemini renders from gemini-raw/ into the layers the site uses.
 
 Usage:  python tools/import_gemini.py       (needs Pillow + numpy + scipy)
 Writes img/scene/*.webp (or .png) and scene.json. Missing files are skipped,
@@ -54,8 +54,8 @@ def key_green(im):
     out = Image.fromarray(rgba, "RGBA")
     bbox = out.getchannel("A").point(lambda v: 255 if v > 24 else 0).getbbox()
     if bbox:
-        # keep the full width, crop only the empty top, buildings sit on the bottom edge
-        out = out.crop((0, bbox[1], out.width, out.height))
+        # keep the full width, crop the empty top and the empty strip below the ground line
+        out = out.crop((0, bbox[1], out.width, bbox[3]))
     return out
 
 

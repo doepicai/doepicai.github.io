@@ -31,8 +31,9 @@ img{max-width:100%}
 .grad{background:linear-gradient(100deg,var(--blush),var(--coral) 45%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 
 /* ================= SCENE (fixed, parallax) ================= */
-.scene{position:fixed;inset:0;z-index:-3;overflow:hidden;background:var(--navy);--hz:62vh}
-.ly{position:absolute;left:0;right:0;will-change:transform}
+.scene{position:fixed;inset:0;z-index:-3;overflow:hidden;background:var(--navy);--hz:70vh}
+.ly{position:absolute;left:0;right:0;will-change:transform;opacity:0;transition:opacity 1s ease}
+.scene.ready .ly{opacity:1}
 .ly img{display:block}
 .sky{top:-4vh;height:calc(var(--hz) + 8vh)}
 .sky>img{width:100%;height:100%;object-fit:cover}
@@ -51,11 +52,12 @@ img{max-width:100%}
 .fb-mirror svg{display:block;width:100%;height:auto}
 @keyframes cl{to{transform:translateX(6%)}}
 .dawn{position:absolute;inset:0;background:var(--navy);opacity:var(--nightImg,0);pointer-events:none}
-.sun{left:68%;right:auto;top:var(--hz);width:min(52vw,560px);aspect-ratio:1;margin-left:calc(min(52vw,560px)/-2);margin-top:calc(min(52vw,560px)/-2)}
+.sun{left:58%;right:auto;top:var(--hz);width:min(68vw,760px);aspect-ratio:1;margin-left:calc(min(68vw,760px)/-2);margin-top:calc(min(68vw,760px)/-2)}
 .fb-sun{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 46%,#fff1ee 0 20%,#ffa4a4 34%,#ff8e80 52%,rgba(226,100,143,.55) 62%,rgba(197,58,157,.0) 72%);filter:blur(.5px)}
 .fb-halo{position:absolute;inset:-60%;border-radius:50%;background:radial-gradient(circle,rgba(255,164,164,.55),rgba(226,100,143,.28) 30%,rgba(136,47,143,.0) 62%);mix-blend-mode:screen}
-.sun>img{width:100%;height:100%;object-fit:contain;mix-blend-mode:screen}
-.city{bottom:calc(100vh - var(--hz) - 1px);left:50%;right:auto;width:max(118vw,1500px);transform-origin:50% 100%}
+.sun{mix-blend-mode:screen}
+.sun>img{width:100%;height:100%;object-fit:contain;-webkit-mask:radial-gradient(circle,#000 52%,transparent 71%);mask:radial-gradient(circle,#000 52%,transparent 71%)}
+.city{bottom:calc(100vh - var(--hz) - 1px);left:50%;right:auto;width:max(104vw,1340px);transform-origin:50% 100%}
 .city>svg,.city>img{display:block;width:100%;height:auto}
 .water{top:var(--hz);bottom:0}
 .water>img{width:100%;height:100%;object-fit:cover}
@@ -362,23 +364,27 @@ const FB={
   "water":()=>`<div class="fb-water"></div><div class="fb-mirror">${FB["city-mid"]()}</div><div class="fb-ripples"></div><div class="fb-refl"></div>`
 };
 const LAYERS=[...document.querySelectorAll(".ly")];
-function useImage(el,src){
-  const im=new Image(); im.alt=""; im.decoding="async";
-  im.onload=()=>{el.innerHTML="";el.appendChild(im);};
-  im.src=src;
-}
-LAYERS.forEach(el=>{el.innerHTML=FB[el.dataset.n]()});
-/* Gemini art overrides: scene.json is written by tools/import_gemini.py */
-fetch("scene.json").then(r=>r.ok?r.json():null).then(m=>{
-  if(!m||!m.layers) return;
-  LAYERS.forEach(el=>{const f=m.layers[el.dataset.n]; if(f) useImage(el,f)});
-  if(m.layers.sky) document.querySelector(".sky").insertAdjacentHTML("beforeend",'<div class="dawn"></div>');
+/* Build the scene once: Gemini art from scene.json (written by tools/import_gemini.py) where it
+   exists, vector fallback elsewhere. Swapping content after first paint caused repaint glitches,
+   so wait for the manifest and decoded images, then fade the layers in. */
+function loadImg(src){return new Promise(res=>{const im=new Image();im.alt="";let done=false;const fin=ok=>{if(!done){done=true;res(ok?im:null)}};im.onload=()=>fin(true);im.onerror=()=>fin(false);im.src=src;setTimeout(()=>fin(im.complete&&im.naturalWidth>0),5000)})}
+(async function initScene(){
+  let m=null;
+  try{const r=await Promise.race([fetch("scene.json"),new Promise((_,rej)=>setTimeout(rej,2500))]); if(r.ok) m=await r.json();}catch(_){}
+  const LY=(m&&m.layers)||{};
+  await Promise.all(LAYERS.map(async el=>{
+    const n=el.dataset.n, src=LY[n];
+    if(src){const im=await loadImg(src); if(im){el.appendChild(im);
+      if(n==="sky") el.insertAdjacentHTML("beforeend",'<div class="dawn"></div>'); return;}}
+    el.innerHTML=FB[n]();
+  }));
   const SPOT=[[7,24,9,.14],[88,16,6,.2],[83,64,10,.1],[3,70,6,.22],[46,9,5,.13],[62,78,8,.17]];
   const box=document.querySelector("#sprites");
-  (m.glass||[]).slice(0,SPOT.length).forEach((src,i)=>{const s=SPOT[i],e=document.createElement("div");
+  (m&&m.glass||[]).slice(0,SPOT.length).forEach((src,i)=>{const s=SPOT[i],e=document.createElement("div");
     e.className="gs";e.dataset.d=s[3];e.style.cssText=`left:${s[0]}%;top:${s[1]}%;width:${s[2]}vw;min-width:${s[2]*9}px;animation-delay:${-i*1.7}s`;
     e.innerHTML=`<img src="${src}" alt="">`;box.appendChild(e)});
-}).catch(()=>{});
+  setTimeout(()=>document.querySelector("#scene").classList.add("ready"),60);
+})();
 
 /* ================= motion: sunrise on scroll + pointer parallax ================= */
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -390,7 +396,7 @@ function apply(){
   scene.style.setProperty("--night",(1-p)*.75);
   scene.style.setProperty("--nightImg",(1-p)*.55);
   /* sun climbs from just under the skyline to well above it */
-  const rise=-p*vh*.30;
+  const rise=-(.34+.2*p)*vh;
   LAYERS.forEach(el=>{
     const d=+el.dataset.d, n=el.dataset.n;
     let x=-px*d*60, y=-py*d*40 - sy*d*.35, ex="";
@@ -404,7 +410,7 @@ function apply(){
 function frame(){px+=(tx-px)*.06;py+=(ty-py)*.06;apply();requestAnimationFrame(frame)}
 addEventListener("scroll",()=>{sy=scrollY;if(still)apply()},{passive:true});
 if(fine&&!still) addEventListener("pointermove",e=>{tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1});
-sy=scrollY; if(still)apply(); else requestAnimationFrame(frame);
+sy=scrollY; apply(); if(!still) requestAnimationFrame(frame);
 
 /* glass tilt + specular follow */
 function bindTilt(){
