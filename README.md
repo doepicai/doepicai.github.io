@@ -4,18 +4,31 @@
 
 ## Дизайн
 
-Сейчас: **Sunset** (редизайн) — плоский, крупная типографика, палитра `#051f39 → #28225d → #4a2480 → #882f8f → #c53a9d → #e2648f → #ff8e80 → #ffa4a4`.
+Сейчас: **Dawn City** — 3D glass поверх слоёв сцены (небо, солнце, три слоя города, вода, стеклянные спрайты). Палитра `#051f39 #28225d #4a2480 #882f8f #c53a9d #e2648f #ff8e80 #ffa4a4`.
 
-Прошлый дизайн **Glass 3D** сохранён и в любой момент восстанавливается:
+Прошлые дизайны восстанавливаются из git:
 
-- тег `design-glass-v1` и ветка `design/glass-v1`;
-- посмотреть: `git checkout design-glass-v1` (вернуться: `git checkout main`);
-- вернуть на сайт: `git checkout design-glass-v1 -- index.html img/social.png` и закоммитить.
+| Дизайн | Тег | Ветка |
+|---|---|---|
+| Glass 3D (v1) | `design-glass-v1` | `design/glass-v1` |
+| Sunset, плоский (v2) | `design-sunset-v2` | `design/sunset-v2` |
+
+Посмотреть: `git checkout design-sunset-v2` (вернуться: `git checkout main`).
+Вернуть на сайт: `git checkout design-sunset-v2 -- index.html img/social.png`, закоммитить и запушить.
+
+## Графика Gemini
+
+Сцена работает и без картинок (векторный запасной вариант). Чтобы подключить рендеры Gemini:
+
+1. Сгенерируйте картинки по промптам из `docs/gemini/PROMPTS.md`.
+2. Положите их в `gemini-raw/` (`sky`, `sun`, `city-far`, `city-mid`, `city-near`, `water`, `glass`).
+3. `python tools/import_gemini.py` (нужны Pillow, numpy, scipy) вырежет зелёный фон, порежет лист стеклянных объектов на спрайты и запишет `img/scene/*` и `scene.json`.
+4. Закоммитьте `img/scene` и `scene.json`. Слои можно добавлять по одному.
 
 ## Как добавить проект
 
-Новый объект в массив `PROJECTS` в начале скрипта `index.html` (картинки в `img/`). Первый проект показывается крупно, остальные строками. Релизы подтягиваются из GitHub (`FEEDS`).
+Новый объект в массив `PROJECTS` в начале скрипта `index.html` (картинки в `img/`). Релизы подтягиваются из GitHub (`FEEDS`).
 
 ## Логотип
 
-`img/logo.svg` (иконка), `favicon.svg`, `img/logo.png`; превью для соцсетей `img/social.png`. Логотип общий для обоих дизайнов.
+`img/logo.svg` (иконка), `favicon.svg`, `img/logo.png`, превью `img/social.png`. Логотип общий для всех дизайнов.

@@ -1,0 +1,5 @@
+gemini-raw/
+__pycache__/
+_*.html
+_*.png
+
