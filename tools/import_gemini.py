@@ -1,8 +1,15 @@
-"""Cut Gemini renders from gemini-raw/ into the layers the site uses.
+"""Cut Gemini renders from gemini-raw/ into the light low-poly scene set the site uses.
 
-Usage:  python tools/import_gemini.py       (needs Pillow + numpy + scipy)
-Writes img/scene/*.webp (or .png) and scene.json. Missing files are skipped,
-so you can add images one by one. See docs/gemini/PROMPTS.md.
+Usage:  python tools/import_gemini.py       (needs Pillow, numpy, scipy)
+Reads   gemini-raw/<name>.(png|jpg|webp)
+Writes  img/lp/*.webp  and  scene.json
+Missing files are skipped, so layers can be added one by one. Prompts: docs/gemini/PROMPTS.md
+
+The set (all low-poly, small after compression):
+  sun-lp                       black background, blended with CSS `screen`  -> img/lp/sun.webp
+  hills-lp                     blue chroma key                              -> img/lp/hills.webp
+  city-far-lp, city-near-lp    blue chroma key                              -> img/lp/city-far.webp, city-near.webp
+  shore-lp-<season>            blue chroma key, 4 seasons                   -> img/lp/shore-<season>.webp
 """
 import json
 from pathlib import Path
@@ -13,8 +20,10 @@ from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "gemini-raw"
-OUT = ROOT / "img" / "scene"
-MAXW = 2560
+OUT = ROOT / "img" / "lp"
+SEASONS = ("spring", "summer", "autumn", "winter")
+# target widths: enough for a 1440 px screen at the scale the page uses, nothing more
+W_SHORE, W_CITY, W_HILLS, W_SUN = 1500, 1400, 1400, 512
 
 
 def load(name):
@@ -26,47 +35,28 @@ def load(name):
     return None
 
 
-def shrink(im):
-    if im.width > MAXW:
-        im = im.resize((MAXW, round(im.height * MAXW / im.width)), Image.LANCZOS)
+def fit(im, width):
+    if im.width > width:
+        im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
     return im
 
 
-def save(im, name, alpha):
+def save(im, name, quality=80):
     OUT.mkdir(parents=True, exist_ok=True)
-    ext = "webp" if alpha or True else "png"
-    path = OUT / f"{name}.{ext}"
-    im.save(path, quality=88 if ext == "webp" else None, method=6) if ext == "webp" else im.save(path)
-    print(f"write {path.relative_to(ROOT)}  {im.size}")
-    return f"img/scene/{path.name}"
-
-
-def key_green(im):
-    """Chroma-key a #00FF00 background to alpha, remove green spill, crop to content."""
-    a = np.asarray(im).astype(np.float32)
-    r, g, b = a[..., 0], a[..., 1], a[..., 2]
-    greenness = g - np.maximum(r, b)           # large only for the key colour
-    alpha = np.clip(1 - (greenness - 40) / 90, 0, 1)   # soft edge
-    # despill: cap green at the max of red/blue on edge pixels
-    spill = greenness > 0
-    g2 = np.where(spill, np.maximum(r, b) + np.minimum(greenness, 0), g)
-    rgba = np.dstack([r, g2, b, alpha * 255]).clip(0, 255).astype(np.uint8)
-    out = Image.fromarray(rgba, "RGBA")
-    bbox = out.getchannel("A").point(lambda v: 255 if v > 24 else 0).getbbox()
-    if bbox:
-        # keep the full width, crop the empty top and the empty strip below the ground line
-        out = out.crop((0, bbox[1], out.width, bbox[3]))
-    return out
+    path = OUT / f"{name}.webp"
+    im.save(path, "WEBP", quality=quality, method=6, alpha_quality=85)
+    print(f"write {path.relative_to(ROOT)}  {im.size}  {path.stat().st_size // 1024} KB")
+    return f"img/lp/{path.name}"
 
 
 def key_auto(im, crop=None, strict=False):
-    """Key out a flat background of any colour (blue for the nature assets), without a key-coloured halo.
+    """Key out a flat background of any colour (blue here), without a key-coloured halo.
     1. key colour = median of the frame border; alpha from the colour distance;
-    2. colours are un-mixed from the key and the key-coloured spill is removed on semi-transparent pixels;
-    3. the matte is eroded a little and softened, so no bright rim of the old background survives;
-    4. fully transparent pixels get the colour of the nearest solid pixel (no blue bleeding into the
-       edge when the browser scales or the WebP encoder compresses the image).
-    crop: None = keep the frame, 'v' = crop empty rows above/below the content."""
+    2. colours are un-mixed from the key; blue-tinted pixels (old background shining through
+       soft edges) are cut (strict) or limited (not strict: ice and violet shadows keep some blue);
+    3. semi-transparent pixels take the colour of the nearest solid pixel;
+    4. the matte is eroded a little and softened.
+    crop='v' crops empty rows above/below the content."""
     a = np.asarray(im).astype(np.float32)
     b = 6
     border = np.concatenate([a[:b].reshape(-1, 3), a[-b:].reshape(-1, 3),
@@ -74,20 +64,15 @@ def key_auto(im, crop=None, strict=False):
     key = np.median(border, axis=0)
     d = np.linalg.norm(a - key, axis=2)
     a0 = np.clip((d - 50) / 70, 0, 1)
-    a0 = a0 * a0 * (3 - 2 * a0)                               # smoothstep
+    a0 = a0 * a0 * (3 - 2 * a0)
     safe = np.maximum(a0, 1e-3)[..., None]
     rgb = np.clip((a - (1 - a0)[..., None] * key) / safe, 0, 255)
-    # key-colour excess (blue over red/green for a blue key): blue-tinted pixels are the old background
-    # shining through blurred edges. strict = foliage and blossoms (blue is never a real colour there);
-    # otherwise ice and violet shadows keep a limited blue cast.
     kc = int(np.argmax(key))
     others = [i for i in range(3) if i != kc]
     ex = rgb[..., kc] - np.maximum(rgb[..., others[0]], rgb[..., others[1]])
     lo, span, lim = (12, 70, 8) if strict else (70, 60, 70)
     a0 = a0 * np.clip(1 - (ex - lo) / span, 0, 1)
     rgb[..., kc] = np.minimum(rgb[..., kc], np.maximum(rgb[..., others[0]], rgb[..., others[1]]) + lim)
-    # edge colour: semi-transparent pixels take the colour of the nearest solid pixel (smoothed), so the
-    # key colour cannot survive as a halo, whatever the (unknowable) real colour behind the blur was
     solid = a0 > 0.92
     idx = ndimage.distance_transform_edt(~solid, return_distances=False, return_indices=True)
     filled = rgb[idx[0], idx[1]]
@@ -95,7 +80,6 @@ def key_auto(im, crop=None, strict=False):
         filled[..., c] = ndimage.gaussian_filter(filled[..., c], 1.5)
     wr = np.clip((1 - a0) * 1.8, 0, 1)[..., None] * (~solid)[..., None]
     rgb = np.clip(rgb * (1 - wr) + filled * wr, 0, 255)
-    # matte: erode, soften, and cut the faintest fringe
     alpha = ndimage.minimum_filter(a0, size=3)
     alpha = ndimage.gaussian_filter(alpha, 0.7)
     alpha = np.clip((alpha - 0.12) / 0.88, 0, 1)
@@ -106,61 +90,25 @@ def key_auto(im, crop=None, strict=False):
             out = out.crop((0, bbox[1], out.width, bbox[3]))
     return out
 
-def black_to_alpha(im):
-    """For screen-blended art on black: alpha from brightness, colour un-premultiplied."""
-    a = np.asarray(im).astype(np.float32)
-    lum = a.max(axis=2)
-    alpha = np.clip(lum / 255 * 1.6, 0, 1)
-    safe = np.maximum(alpha, 1e-3)[..., None]
-    rgb = np.clip(a / safe, 0, 255)
-    return Image.fromarray(np.dstack([rgb, alpha * 255]).astype(np.uint8), "RGBA")
-
 
 def main():
-    manifest = {"layers": {}, "glass": []}
+    layers, seasons = {}, {}
 
-    if (im := load("sky")):
-        manifest["layers"]["sky"] = save(shrink(im), "sky", False)
+    if (im := load("sun-lp")):
+        layers["sun"] = save(fit(im, W_SUN), "sun", 82)        # black stays black, CSS blends with `screen`
+    if (im := load("hills-lp")):
+        layers["hills"] = save(key_auto(fit(im, W_HILLS), "v"), "hills")
+    if (im := load("city-far-lp")):
+        layers["city-far"] = save(key_auto(fit(im, W_CITY), "v"), "city-far")
+    if (im := load("city-near-lp")):
+        layers["city-near"] = save(key_auto(fit(im, W_CITY), "v"), "city-near")
+    for s in SEASONS:
+        if (im := load(f"shore-lp-{s}")):
+            seasons[s] = {"shore": save(key_auto(fit(im, W_SHORE), "v", strict=s != "winter"), f"shore-{s}")}
 
-    if (im := load("sun")):
-        manifest["layers"]["sun"] = save(shrink(im), "sun", False)   # black stays, CSS uses screen
-
-    for n in ("city-far", "city-mid", "city-near"):
-        if (im := load(n)):
-            manifest["layers"][n] = save(key_green(shrink(im)), n, True)
-
-    if (im := load("water")):
-        manifest["layers"]["water"] = save(shrink(im), "water", False)
-
-    if (im := load("glass")):
-        rgba = black_to_alpha(shrink(im))
-        mask = np.asarray(rgba.getchannel("A")) > 40
-        mask = ndimage.binary_dilation(mask, iterations=6)
-        lab, n = ndimage.label(mask)
-        k = 0
-        for sl in ndimage.find_objects(lab):
-            h, w = sl[0].stop - sl[0].start, sl[1].stop - sl[1].start
-            if min(h, w) < 40:
-                continue
-            k += 1
-            pad = 6
-            box = (max(sl[1].start - pad, 0), max(sl[0].start - pad, 0), sl[1].stop + pad, sl[0].stop + pad)
-            manifest["glass"].append(save(rgba.crop(box), f"glass-{k}", True))
-
-    # nature: hills + per-season shore strip and corner branch (blue chroma key)
-    if (im := load("hills")):
-        manifest["layers"]["hills"] = save(key_auto(shrink(im), "v"), "hills", True)
-    manifest["seasons"] = {}
-    for s in ("spring", "summer", "autumn", "winter"):
-        entry = {}
-        if (im := load(f"shore-{s}")):
-            entry["shore"] = save(key_auto(shrink(im), "v", strict=s != "winter"), f"shore-{s}", True)
-        if (im := load(f"branch-{s}")):
-            entry["branch"] = save(key_auto(shrink(im), strict=s != "winter"), f"branch-{s}", True)
-        if entry:
-            manifest["seasons"][s] = entry
-    (ROOT / "scene.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
-    print("scene.json updated, open the site to see the new art")
+    (ROOT / "scene.json").write_text(json.dumps({"layers": layers, "seasons": seasons}, indent=1), encoding="utf-8")
+    total = sum(p.stat().st_size for p in OUT.glob("*.webp")) if OUT.exists() else 0
+    print(f"scene.json updated. img/lp total: {total // 1024} KB")
 
 
 if __name__ == "__main__":

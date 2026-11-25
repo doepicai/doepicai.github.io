@@ -1,39 +1,22 @@
 {
  "layers": {
-  "sky": "img/scene/sky.webp",
-  "sun": "img/scene/sun.webp",
-  "city-far": "img/scene/city-far.webp",
-  "city-mid": "img/scene/city-mid.webp",
-  "city-near": "img/scene/city-near.webp",
-  "water": "img/scene/water.webp",
-  "hills": "img/scene/hills.webp"
+  "sun": "img/lp/sun.webp",
+  "hills": "img/lp/hills.webp",
+  "city-far": "img/lp/city-far.webp",
+  "city-near": "img/lp/city-near.webp"
  },
- "glass": [
-  "img/scene/glass-1.webp",
-  "img/scene/glass-2.webp",
-  "img/scene/glass-3.webp",
-  "img/scene/glass-4.webp",
-  "img/scene/glass-5.webp",
-  "img/scene/glass-6.webp",
-  "img/scene/glass-7.webp",
-  "img/scene/glass-8.webp"
- ],
  "seasons": {
   "spring": {
-   "shore": "img/scene/shore-spring.webp",
-   "branch": "img/scene/branch-spring.webp"
+   "shore": "img/lp/shore-spring.webp"
   },
   "summer": {
-   "shore": "img/scene/shore-summer.webp",
-   "branch": "img/scene/branch-summer.webp"
+   "shore": "img/lp/shore-summer.webp"
   },
   "autumn": {
-   "shore": "img/scene/shore-autumn.webp",
-   "branch": "img/scene/branch-autumn.webp"
+   "shore": "img/lp/shore-autumn.webp"
   },
   "winter": {
-   "shore": "img/scene/shore-winter.webp",
-   "branch": "img/scene/branch-winter.webp"
+   "shore": "img/lp/shore-winter.webp"
   }
  }
 }
