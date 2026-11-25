@@ -1,4 +1,4 @@
-﻿# Графика Gemini для doepic.ai
+# Графика Gemini для doepic.ai
 
 Сайт собран слоями. Пока картинок нет, работает векторный запасной вариант. Каждый слой можно заменить рендером из Gemini.
 Сохраните файлы в `gemini-raw/` под указанными именами и запустите `python tools/import_gemini.py`.
@@ -30,9 +30,9 @@ Epic dawn sky panorama, 21:9. The sun is just below the horizon and NOT visible 
 ## sun.png (1:1, на чёрном)
 
 ```
-A luminous 3D glass sun orb centered on a PURE BLACK #000000 background, 1:1. Core is hot white-blush #fff1ee, glass-like shell in blush #ffa4a4 and coral #ff8e80, soft rose halo and delicate long light rays radiating outward fading to black. Glossy highlights, volumetric glow. Nothing else in the frame, the background must be perfectly black.
+An EPIC cinematic 3D glass SUN centered on a PURE BLACK #000000 background, front view, symmetrical, filling about 80 percent of the frame. A huge round solar disk with a blazing hot white-yellow #faffc2 core, glowing through blush #ffa4a4 and coral #ff8e80 into rose #e2648f and magenta #c53a9d near the edge, under a glossy translucent glass dome with soft specular highlights; fine detail inside: swirling plasma flames, solar granulation, luminous concentric glass rings. NO black ring, NO mechanical parts, NO gap: the disk edge melts into a bright glowing corona. From the corona burst 12 large tapered glass sun rays in the style of a sunrise logo, rounded at the tips, alternating long and short, each ray bright and hot near the sun and fading smoothly to transparent toward its tip, colored blush, coral and rose. Between them dozens of thin long light beams, strong bloom, volumetric god rays, a subtle lens flare, and a wide soft rose halo fading to black. Polished photoreal 3D render, translucent glass, powerful radiant glow. No text, no horizon, no clouds, nothing else, the background must be perfectly black.
 ```
-
+(Первая версия с «чёрным кольцом» выглядела как кнопка, эта версия принята в сайт.)
 ## city-far.png (21:6, на зелёном)
 
 ```

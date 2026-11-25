@@ -52,11 +52,11 @@ img{max-width:100%}
 .fb-mirror svg{display:block;width:100%;height:auto}
 @keyframes cl{to{transform:translateX(6%)}}
 .dawn{position:absolute;inset:0;background:var(--navy);opacity:var(--nightImg,0);pointer-events:none}
-.sun{left:58%;right:auto;top:var(--hz);width:min(68vw,760px);aspect-ratio:1;margin-left:calc(min(68vw,760px)/-2);margin-top:calc(min(68vw,760px)/-2)}
+.sun{left:62%;right:auto;top:var(--hz);width:min(68vw,760px);aspect-ratio:1;margin-left:calc(min(68vw,760px)/-2);margin-top:calc(min(68vw,760px)/-2)}
 .fb-sun{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 46%,#fff1ee 0 20%,#ffa4a4 34%,#ff8e80 52%,rgba(226,100,143,.55) 62%,rgba(197,58,157,.0) 72%);filter:blur(.5px)}
 .fb-halo{position:absolute;inset:-60%;border-radius:50%;background:radial-gradient(circle,rgba(255,164,164,.55),rgba(226,100,143,.28) 30%,rgba(136,47,143,.0) 62%);mix-blend-mode:screen}
 .sun{mix-blend-mode:screen}
-.sun>img{width:100%;height:100%;object-fit:contain;-webkit-mask:radial-gradient(circle,#000 52%,transparent 71%);mask:radial-gradient(circle,#000 52%,transparent 71%)}
+.sun>img{width:100%;height:100%;object-fit:contain;-webkit-mask:radial-gradient(circle,#000 62%,transparent 74%);mask:radial-gradient(circle,#000 62%,transparent 74%)}
 .city{bottom:calc(100vh - var(--hz) - 1px);left:50%;right:auto;width:max(104vw,1340px);transform-origin:50% 100%}
 .city>svg,.city>img{display:block;width:100%;height:auto}
 .water{top:var(--hz);bottom:0}
@@ -396,7 +396,7 @@ function apply(){
   scene.style.setProperty("--night",(1-p)*.75);
   scene.style.setProperty("--nightImg",(1-p)*.55);
   /* sun climbs from just under the skyline to well above it */
-  const rise=-(.34+.2*p)*vh;
+  const rise=-(.31+.2*p)*vh;
   LAYERS.forEach(el=>{
     const d=+el.dataset.d, n=el.dataset.n;
     let x=-px*d*60, y=-py*d*40 - sy*d*.35, ex="";
