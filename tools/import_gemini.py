@@ -59,6 +59,26 @@ def key_green(im):
     return out
 
 
+def key_auto(im, crop=None):
+    """Key out a flat background of any colour (blue for the nature assets).
+    The key colour is the median of the frame border; edge pixels are un-mixed so no fringe stays.
+    crop: None = keep the frame, 'v' = crop empty rows above/below the content."""
+    a = np.asarray(im).astype(np.float32)
+    b = 6
+    border = np.concatenate([a[:b].reshape(-1, 3), a[-b:].reshape(-1, 3),
+                             a[:, :b].reshape(-1, 3), a[:, -b:].reshape(-1, 3)])
+    key = np.median(border, axis=0)
+    d = np.linalg.norm(a - key, axis=2)
+    alpha = np.clip((d - 40) / 55, 0, 1)
+    safe = np.maximum(alpha, 1e-3)[..., None]
+    rgb = np.clip((a - (1 - alpha)[..., None] * key) / safe, 0, 255)
+    out = Image.fromarray(np.dstack([rgb, alpha * 255]).astype(np.uint8), "RGBA")
+    if crop == "v":
+        bbox = out.getchannel("A").point(lambda v: 255 if v > 24 else 0).getbbox()
+        if bbox:
+            out = out.crop((0, bbox[1], out.width, bbox[3]))
+    return out
+
 def black_to_alpha(im):
     """For screen-blended art on black: alpha from brightness, colour un-premultiplied."""
     a = np.asarray(im).astype(np.float32)
@@ -100,6 +120,18 @@ def main():
             box = (max(sl[1].start - pad, 0), max(sl[0].start - pad, 0), sl[1].stop + pad, sl[0].stop + pad)
             manifest["glass"].append(save(rgba.crop(box), f"glass-{k}", True))
 
+    # nature: hills + per-season shore strip and corner branch (blue chroma key)
+    if (im := load("hills")):
+        manifest["layers"]["hills"] = save(key_auto(shrink(im), "v"), "hills", True)
+    manifest["seasons"] = {}
+    for s in ("spring", "summer", "autumn", "winter"):
+        entry = {}
+        if (im := load(f"shore-{s}")):
+            entry["shore"] = save(key_auto(shrink(im), "v"), f"shore-{s}", True)
+        if (im := load(f"branch-{s}")):
+            entry["branch"] = save(key_auto(shrink(im)), f"branch-{s}", True)
+        if entry:
+            manifest["seasons"][s] = entry
     (ROOT / "scene.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
     print("scene.json updated, open the site to see the new art")
 

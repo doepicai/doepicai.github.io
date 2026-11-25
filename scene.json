@@ -5,7 +5,8 @@
   "city-far": "img/scene/city-far.webp",
   "city-mid": "img/scene/city-mid.webp",
   "city-near": "img/scene/city-near.webp",
-  "water": "img/scene/water.webp"
+  "water": "img/scene/water.webp",
+  "hills": "img/scene/hills.webp"
  },
  "glass": [
   "img/scene/glass-1.webp",
@@ -16,5 +17,23 @@
   "img/scene/glass-6.webp",
   "img/scene/glass-7.webp",
   "img/scene/glass-8.webp"
- ]
+ ],
+ "seasons": {
+  "spring": {
+   "shore": "img/scene/shore-spring.webp",
+   "branch": "img/scene/branch-spring.webp"
+  },
+  "summer": {
+   "shore": "img/scene/shore-summer.webp",
+   "branch": "img/scene/branch-summer.webp"
+  },
+  "autumn": {
+   "shore": "img/scene/shore-autumn.webp",
+   "branch": "img/scene/branch-autumn.webp"
+  },
+  "winter": {
+   "shore": "img/scene/shore-winter.webp",
+   "branch": "img/scene/branch-winter.webp"
+  }
+ }
 }

@@ -57,7 +57,24 @@ img{max-width:100%}
 .fb-halo{position:absolute;inset:-60%;border-radius:50%;background:radial-gradient(circle,rgba(255,164,164,.55),rgba(226,100,143,.28) 30%,rgba(136,47,143,.0) 62%);mix-blend-mode:screen}
 .sun{mix-blend-mode:screen}
 .sun>img{width:100%;height:100%;object-fit:contain;-webkit-mask:radial-gradient(circle,#000 62%,transparent 74%);mask:radial-gradient(circle,#000 62%,transparent 74%)}
-.city{bottom:calc(100vh - var(--hz) - 1px);left:50%;right:auto;width:max(104vw,1340px);transform-origin:50% 100%}
+.cen{left:50%;right:auto;transform-origin:50% 100%}
+.city{bottom:calc(100vh - var(--hz) - 1px);width:max(104vw,1340px)}
+.hills{bottom:calc(100vh - var(--hz) - 1px);width:max(150vw,1900px)}
+.hills>img{display:block;width:100%;height:auto}
+.shore{bottom:calc(100vh - var(--hz) - 3.2vh);width:max(104vw,1340px);aspect-ratio:5.5/1}
+.shore>img{position:absolute;left:0;bottom:0;width:100%;height:auto;opacity:0}
+.tint{position:absolute;inset:0;mix-blend-mode:color;pointer-events:none;opacity:0}
+.branches{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.br{position:absolute;top:-2vh;width:min(54vw,780px);aspect-ratio:16/9;will-change:transform}
+.br.l{left:-3vw}
+.br.r{right:-3vw;width:min(40vw,580px);top:-1vh}
+.br img{position:absolute;inset:0;width:100%;height:100%;opacity:0;filter:drop-shadow(0 20px 30px rgba(5,10,40,.45))}
+#parts{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.seasons.glass{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:45;display:flex;flex-direction:column;gap:13px;padding:15px 10px;border-radius:999px;align-items:center}
+.seasons button{width:14px;height:14px;border-radius:50%;border:2px solid var(--c);background:transparent;cursor:pointer;padding:0;transition:.25s;position:relative}
+.seasons button.on{background:var(--c);box-shadow:0 0 14px var(--c);transform:scale(1.25)}
+.seasons button:hover:after{content:attr(data-n);position:absolute;right:26px;top:50%;transform:translateY(-50%);font:600 12px var(--mono);color:var(--ink);background:rgba(5,31,57,.85);padding:3px 9px;border-radius:8px;white-space:nowrap}
+@media(max-width:700px){.seasons{right:6px;padding:11px 7px}}
 .city>svg,.city>img{display:block;width:100%;height:auto}
 .water{top:var(--hz);bottom:0}
 .water>img{width:100%;height:100%;object-fit:cover}
@@ -195,12 +212,20 @@ footer a:hover{text-decoration:underline}
 <div class="scene" id="scene" aria-hidden="true">
   <div class="ly sky" data-n="sky" data-d="0.01"></div>
   <div class="ly sun" data-n="sun" data-d="0.02"></div>
-  <div class="ly city" data-n="city-far" data-d="0.035"></div>
-  <div class="ly city" data-n="city-mid" data-d="0.06"></div>
-  <div class="ly city" data-n="city-near" data-d="0.1"></div>
+  <div class="ly hills cen" data-n="hills" data-d="0.02"></div>
+  <div class="ly city cen" data-n="city-far" data-d="0.035"></div>
+  <div class="ly city cen" data-n="city-mid" data-d="0.06"></div>
+  <div class="ly city cen" data-n="city-near" data-d="0.1"></div>
   <div class="ly water" data-n="water" data-d="0.02"></div>
+  <div class="ly shore cen" data-n="shore" data-d="0.12"></div>
+  <div class="tint" id="tint"></div>
 </div>
 <div class="sprites" id="sprites" aria-hidden="true"></div>
+<div class="branches" id="branches" aria-hidden="true"></div>
+<canvas id="parts" aria-hidden="true"></canvas>
+<div class="seasons glass" role="group" aria-label="Seasons">
+  <button data-k="0" style="--c:#ffa4a4"></button><button data-k="1" style="--c:#ffd27a"></button><button data-k="2" style="--c:#ff8e80"></button><button data-k="3" style="--c:#9fd8ff"></button>
+</div>
 <div class="veil" id="veil"></div><div class="fx"></div>
 
 <nav><div class="bar glass">
@@ -312,6 +337,7 @@ function render(){
   document.querySelector("#marq").innerHTML=unit+unit+unit+unit;
   document.querySelector("#stack").innerHTML=STACK.map(x=>`<span>${x}</span>`).join("");
   renderWork(); renderFeed();
+  if(typeof updSeasonUI==="function") updSeasonUI();
 }
 document.querySelector("#lang").onclick=()=>{L=L==="ru"?"en":"ru";localStorage.setItem("lang",L);render()};
 document.querySelector("#yr").textContent=new Date().getFullYear();
@@ -364,6 +390,8 @@ const FB={
   "water":()=>`<div class="fb-water"></div><div class="fb-mirror">${FB["city-mid"]()}</div><div class="fb-ripples"></div><div class="fb-refl"></div>`
 };
 const LAYERS=[...document.querySelectorAll(".ly")];
+const SEASONS=["spring","summer","autumn","winter"];
+const SNAME={ru:["Весна","Лето","Осень","Зима"],en:["Spring","Summer","Autumn","Winter"]};
 /* Build the scene once: Gemini art from scene.json (written by tools/import_gemini.py) where it
    exists, vector fallback elsewhere. Swapping content after first paint caused repaint glitches,
    so wait for the manifest and decoded images, then fade the layers in. */
@@ -371,46 +399,117 @@ function loadImg(src){return new Promise(res=>{const im=new Image();im.alt="";le
 (async function initScene(){
   let m=null;
   try{const r=await Promise.race([fetch("scene.json"),new Promise((_,rej)=>setTimeout(rej,2500))]); if(r.ok) m=await r.json();}catch(_){}
-  const LY=(m&&m.layers)||{};
+  const LY=(m&&m.layers)||{}, SE=(m&&m.seasons)||{};
   await Promise.all(LAYERS.map(async el=>{
-    const n=el.dataset.n, src=LY[n];
+    const n=el.dataset.n;
+    if(n==="shore"){for(const s of SEASONS){if(SE[s]&&SE[s].shore){const im=await loadImg(SE[s].shore); if(im){im.dataset.s=s; el.appendChild(im);}}} return;}
+    const src=LY[n];
     if(src){const im=await loadImg(src); if(im){el.appendChild(im);
       if(n==="sky") el.insertAdjacentHTML("beforeend",'<div class="dawn"></div>'); return;}}
-    el.innerHTML=FB[n]();
+    el.innerHTML=FB[n]?FB[n]():"";
   }));
+  /* corner branches, one image per season, crossfaded */
+  const brs=document.querySelector("#branches");
+  for(const side of ["l","r"]){
+    const b=document.createElement("div"); b.className="br "+side; b.dataset.d=side==="l"?.16:.22;
+    for(const s of SEASONS){if(SE[s]&&SE[s].branch){const im=await loadImg(SE[s].branch); if(im){im.dataset.s=s; b.appendChild(im);}}}
+    if(b.children.length) brs.appendChild(b);
+  }
   const SPOT=[[7,24,9,.14],[88,16,6,.2],[83,64,10,.1],[3,70,6,.22],[46,9,5,.13],[62,78,8,.17]];
   const box=document.querySelector("#sprites");
   (m&&m.glass||[]).slice(0,SPOT.length).forEach((src,i)=>{const s=SPOT[i],e=document.createElement("div");
     e.className="gs";e.dataset.d=s[3];e.style.cssText=`left:${s[0]}%;top:${s[1]}%;width:${s[2]}vw;min-width:${s[2]*9}px;animation-delay:${-i*1.7}s`;
     e.innerHTML=`<img src="${src}" alt="">`;box.appendChild(e)});
   setTimeout(()=>document.querySelector("#scene").classList.add("ready"),60);
+  applySeasons(); apply();
 })();
 
-/* ================= motion: sunrise on scroll + pointer parallax ================= */
+/* ================= motion: sunrise + four seasons on scroll, pointer parallax ================= */
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
 const fine=matchMedia("(hover:hover) and (pointer:fine)").matches;
-const root=document.documentElement, scene=document.querySelector("#scene"), sunEl=document.querySelector(".sun");
-let px=0,py=0,tx=0,ty=0,sy=0;
+const root=document.documentElement, scene=document.querySelector("#scene"), tint=document.querySelector("#tint");
+let px=0,py=0,tx=0,ty=0,sy=0,WT=[1,0,0,0],SUNO=[1,1],curS=-1;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+/* season look: colour grade + sun mood */
+const TINT={spring:[0,0,0,0],summer:[255,176,72,.26],autumn:[255,110,30,.34],winter:[96,176,255,.42]};
+const SUNK={spring:[1,1],summer:[1,1.08],autumn:[.88,.96],winter:[.5,.86]};
+function weights(s){const w=[0,0,0,0],i=Math.min(2,Math.floor(s)),t=s-i,e=clamp((t-.3)/.4,0,1),k=e*e*(3-2*e);w[i]=1-k;w[i+1]=k;return w}
+function updSeasonUI(){
+  document.querySelectorAll(".seasons button").forEach((b,i)=>{b.classList.toggle("on",i===curS);b.dataset.n=SNAME[L][i];b.setAttribute("aria-label",SNAME[L][i])});
+}
+function applySeasons(){
+  const max=Math.max(1,root.scrollHeight-innerHeight);
+  WT=weights(3*clamp(sy/max,0,1));
+  document.querySelectorAll("[data-s]").forEach(im=>{im.style.opacity=WT[SEASONS.indexOf(im.dataset.s)]});
+  let a=0,r=0,g=0,b=0,so=0,ss=0;
+  SEASONS.forEach((n,i)=>{const T=TINT[n],wa=WT[i]*T[3];a+=wa;r+=wa*T[0];g+=wa*T[1];b+=wa*T[2];so+=WT[i]*SUNK[n][0];ss+=WT[i]*SUNK[n][1]});
+  tint.style.background=a>0?`rgb(${Math.round(r/a)},${Math.round(g/a)},${Math.round(b/a)})`:"transparent"; tint.style.opacity=a;
+  SUNO=[so,ss];
+  const idx=WT.indexOf(Math.max(...WT)); if(idx!==curS){curS=idx;updSeasonUI()}
+}
 function apply(){
   const vh=innerHeight, p=.34+.66*Math.min(1,sy/(vh*1.1));
   scene.style.setProperty("--night",(1-p)*.75);
   scene.style.setProperty("--nightImg",(1-p)*.55);
-  /* sun climbs from just under the skyline to well above it */
+  /* the sun climbs from just under the skyline to well above it */
   const rise=-(.31+.2*p)*vh;
   LAYERS.forEach(el=>{
-    const d=+el.dataset.d, n=el.dataset.n;
-    let x=-px*d*60, y=-py*d*40 - sy*d*.35, ex="";
-    if(n==="sun") y+=rise;
-    if(el.classList.contains("city")) ex="translateX(-50%) ";
-    el.style.transform=`${ex}translate3d(${x}px,${y}px,0)`;
+    const d=+el.dataset.d, n=el.dataset.n, cen=el.classList.contains("cen");
+    /* everything standing on the horizon (hills, city, water, shore) moves sideways only:
+       a vertical shift would lift the city off its base and open a gap */
+    let x=-px*d*40, y=0;
+    if(n==="sky") y=-py*d*30 - sy*d*.2;
+    let tf=`translate3d(${x}px,${y}px,0)`;
+    if(n==="sun"){tf=`translate3d(${x}px,${rise-py*d*20}px,0) scale(${SUNO[1]})`; el.style.opacity=SUNO[0]}
+    el.style.transform=(cen?"translateX(-50%) ":"")+tf;
   });
+  document.querySelectorAll(".br").forEach(e=>{const d=+e.dataset.d;e.style.transform=`translate3d(${-px*d*90}px,${-py*d*60-sy*d*.12}px,0)${e.classList.contains("r")?" scaleX(-1)":""}`});
   document.querySelectorAll(".gs").forEach(e=>{const d=+e.dataset.d;e.style.transform=`translate3d(${-px*d*140}px,${-py*d*100-sy*d*.5}px,0)`});
   root.style.setProperty("--veil",Math.min(.5,sy/(vh*2.2)));
 }
-function frame(){px+=(tx-px)*.06;py+=(ty-py)*.06;apply();requestAnimationFrame(frame)}
-addEventListener("scroll",()=>{sy=scrollY;if(still)apply()},{passive:true});
+
+/* ---- falling nature: petals, fireflies, leaves, snow (canvas, follows the season weights) ---- */
+const cv=document.querySelector("#parts"), cx=cv.getContext("2d");
+let PT=[];
+function fitCanvas(){cv.width=innerWidth;cv.height=innerHeight}
+addEventListener("resize",fitCanvas); fitCanvas();
+function spawn(kind){
+  const W=cv.width,H=cv.height,r=Math.random;
+  const p={k:kind,x:r()*W*1.15-W*.05,y:-24,a:r()*6.28,ph:r()*6.28,sp:(r()-.5)*2.4};
+  if(kind==="petal"){p.vy=22+r()*26;p.vx=10+r()*20;p.sz=4+r()*5;p.col=r()<.5?"255,164,164":"226,100,143"}
+  if(kind==="leaf"){p.vy=34+r()*34;p.vx=8+r()*26;p.sz=7+r()*6;p.col=["255,142,128","226,100,143","250,255,194","224,130,50"][Math.floor(r()*4)]}
+  if(kind==="snow"){p.vy=26+r()*40;p.vx=-6+r()*12;p.sz=1.2+r()*3;p.col="255,255,255"}
+  if(kind==="fly"){p.x=r()*W;p.y=H*(.3+r()*.55);p.vx=-8+r()*16;p.vy=-6+r()*12;p.sz=1.6+r()*2.2;p.col="255,222,150"}
+  return p;
+}
+function stepParticles(dt,t){
+  const W=cv.width,H=cv.height, wt={petal:WT[0],fly:WT[1],leaf:WT[2],snow:WT[3]};
+  const rate={petal:7,leaf:6,snow:22}, cap={petal:60,leaf:50,snow:140,fly:34};
+  const count={petal:0,leaf:0,snow:0,fly:0}; PT.forEach(p=>count[p.k]++);
+  for(const k of ["petal","leaf","snow"]) if(wt[k]>.05&&count[k]<cap[k]&&Math.random()<rate[k]*wt[k]*dt) PT.push(spawn(k));
+  if(wt.fly>.05) while(count.fly<cap.fly*wt.fly){PT.push(spawn("fly"));count.fly++}
+  cx.clearRect(0,0,W,H);
+  PT=PT.filter(p=>{
+    const f=Math.min(1,wt[p.k]*3); if(p.k==="fly"&&f<.04) return false;
+    p.x+=(p.vx+Math.sin(t*1.3+p.ph)*(p.k==="snow"?10:18))*dt; p.y+=p.vy*dt; p.a+=p.sp*dt;
+    if(p.k==="fly"){ if(p.x<-20||p.x>W+20) p.vx*=-1; if(p.y<H*.25||p.y>H*.9) p.vy*=-1; }
+    else if(p.y>H+30||p.x>W+60) return false;
+    cx.save(); cx.translate(p.x,p.y); cx.rotate(p.a);
+    if(p.k==="petal"){cx.fillStyle=`rgba(${p.col},${.85*f})`;cx.beginPath();cx.ellipse(0,0,p.sz,p.sz*.55,0,0,6.283);cx.fill()}
+    else if(p.k==="leaf"){cx.fillStyle=`rgba(${p.col},${.9*f})`;cx.beginPath();cx.moveTo(0,-p.sz);cx.quadraticCurveTo(p.sz*.9,0,0,p.sz);cx.quadraticCurveTo(-p.sz*.9,0,0,-p.sz);cx.fill()}
+    else if(p.k==="snow"){cx.fillStyle=`rgba(255,255,255,${.9*f})`;cx.beginPath();cx.arc(0,0,p.sz,0,6.283);cx.fill()}
+    else {const pulse=.5+.5*Math.sin(t*2.2+p.ph),g=cx.createRadialGradient(0,0,0,0,0,p.sz*5);g.addColorStop(0,`rgba(${p.col},${.95*pulse*f})`);g.addColorStop(1,`rgba(${p.col},0)`);cx.fillStyle=g;cx.beginPath();cx.arc(0,0,p.sz*5,0,6.283);cx.fill()}
+    cx.restore(); return true;
+  });
+}
+let lastT=performance.now();
+function frame(now){px+=(tx-px)*.06;py+=(ty-py)*.06;applySeasons();apply();stepParticles(Math.min(.05,(now-lastT)/1000),now/1000);lastT=now;requestAnimationFrame(frame)}
+addEventListener("scroll",()=>{sy=scrollY;if(still){applySeasons();apply()}},{passive:true});
+addEventListener("resize",()=>{applySeasons();apply()});
 if(fine&&!still) addEventListener("pointermove",e=>{tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1});
-sy=scrollY; apply(); if(!still) requestAnimationFrame(frame);
+document.querySelectorAll(".seasons button").forEach(b=>b.onclick=()=>{
+  const max=Math.max(1,root.scrollHeight-innerHeight); scrollTo({top:max*(+b.dataset.k)/3,behavior:still?"auto":"smooth"})});
+sy=scrollY; applySeasons(); apply(); if(!still) requestAnimationFrame(frame);
 
 /* glass tilt + specular follow */
 function bindTilt(){

@@ -62,3 +62,23 @@ Calm glassy water surface at dawn, 21:7, seen from low angle. The top edge is th
 ```
 A sprite sheet of 8 to 10 separate floating 3D glass objects on a PURE BLACK #000000 background, 16:9, wide spacing between objects so none touch: glass spheres of different sizes, a faceted crystal, a thick glass ring, a shard, a glass cube with rounded corners, a pill shape. Translucent with colored refraction in magenta #c53a9d, coral #ff8e80 and blush #ffa4a4, glossy white specular highlights, soft inner glow. Nothing else, the background must be perfectly black.
 ```
+
+---
+
+## Природа и сезоны (ключ — синий `#0000FF`, скрипт определяет цвет фона по краям сам)
+
+Общий префикс: `3D glassy style, translucent glass-like leaves and surfaces, soft subsurface glow, glossy specular highlights, polished cinematic 3D render, no text, not pixel art. SOLID PURE BLUE #0000FF background (flat chroma-key blue, no gradient, no sky, no water).`
+
+### hills.png (21:5)
+```
+Very wide panorama 21:5. Layered misty mountains and forested hills. Three overlapping ridges in hazy indigo #28225d, purple #4a2480 and plum #882f8f with soft atmospheric haze, glassy faceted mountain faces with a soft blush #ffa4a4 rim light as if the sun rises behind, dark pine forests on the slopes, the nearest ridge darkest. All mountains stand on one straight flat baseline at the very bottom edge and touch it, nothing below.
+```
+
+### shore-spring / shore-summer / shore-autumn / shore-winter (21:4)
+Тот же формат, меняется описание берега: *SPRING* — цветущие вишни в blush `#ffa4a4` и rose `#e2648f`, цветущие кусты, камыш, лепестки; *SUMMER* — густые деревья и плакучая ива, изумрудная листва с коралловыми бликами, светлячки; *AUTUMN* — клёны, берёзы и дубы с янтарной, золотой, коралловой и красной листвой, тыквы, сухой камыш, кружащиеся листья; *WINTER* — заснеженные ели и сосны, голые берёзы с ледяными кристаллами, сосульки, холодный снег с фиолетовыми тенями. Везде: «a low embankment seen from the side, a row of trees of varied heights up to 70 percent of the frame, a thin stone edge at the very bottom, everything stands on one straight flat bottom edge».
+
+### branch-spring / branch-summer / branch-autumn / branch-winter (16:9)
+```
+A large overhanging <cherry blossom | leafy | maple | frosted> branch entering from the TOP-LEFT corner of the frame and sweeping toward the center, occupying the upper-left half of the image, <season details>, depth of field: far parts softly blurred, near ones sharp. Nothing else, the right and bottom parts of the frame stay empty blue.
+```
+(Правая ветвь на сайте — зеркальная копия левой.)
