@@ -59,9 +59,13 @@ def key_green(im):
     return out
 
 
-def key_auto(im, crop=None):
-    """Key out a flat background of any colour (blue for the nature assets).
-    The key colour is the median of the frame border; edge pixels are un-mixed so no fringe stays.
+def key_auto(im, crop=None, strict=False):
+    """Key out a flat background of any colour (blue for the nature assets), without a key-coloured halo.
+    1. key colour = median of the frame border; alpha from the colour distance;
+    2. colours are un-mixed from the key and the key-coloured spill is removed on semi-transparent pixels;
+    3. the matte is eroded a little and softened, so no bright rim of the old background survives;
+    4. fully transparent pixels get the colour of the nearest solid pixel (no blue bleeding into the
+       edge when the browser scales or the WebP encoder compresses the image).
     crop: None = keep the frame, 'v' = crop empty rows above/below the content."""
     a = np.asarray(im).astype(np.float32)
     b = 6
@@ -69,9 +73,32 @@ def key_auto(im, crop=None):
                              a[:, :b].reshape(-1, 3), a[:, -b:].reshape(-1, 3)])
     key = np.median(border, axis=0)
     d = np.linalg.norm(a - key, axis=2)
-    alpha = np.clip((d - 40) / 55, 0, 1)
-    safe = np.maximum(alpha, 1e-3)[..., None]
-    rgb = np.clip((a - (1 - alpha)[..., None] * key) / safe, 0, 255)
+    a0 = np.clip((d - 50) / 70, 0, 1)
+    a0 = a0 * a0 * (3 - 2 * a0)                               # smoothstep
+    safe = np.maximum(a0, 1e-3)[..., None]
+    rgb = np.clip((a - (1 - a0)[..., None] * key) / safe, 0, 255)
+    # key-colour excess (blue over red/green for a blue key): blue-tinted pixels are the old background
+    # shining through blurred edges. strict = foliage and blossoms (blue is never a real colour there);
+    # otherwise ice and violet shadows keep a limited blue cast.
+    kc = int(np.argmax(key))
+    others = [i for i in range(3) if i != kc]
+    ex = rgb[..., kc] - np.maximum(rgb[..., others[0]], rgb[..., others[1]])
+    lo, span, lim = (12, 70, 8) if strict else (70, 60, 70)
+    a0 = a0 * np.clip(1 - (ex - lo) / span, 0, 1)
+    rgb[..., kc] = np.minimum(rgb[..., kc], np.maximum(rgb[..., others[0]], rgb[..., others[1]]) + lim)
+    # edge colour: semi-transparent pixels take the colour of the nearest solid pixel (smoothed), so the
+    # key colour cannot survive as a halo, whatever the (unknowable) real colour behind the blur was
+    solid = a0 > 0.92
+    idx = ndimage.distance_transform_edt(~solid, return_distances=False, return_indices=True)
+    filled = rgb[idx[0], idx[1]]
+    for c in range(3):
+        filled[..., c] = ndimage.gaussian_filter(filled[..., c], 1.5)
+    wr = np.clip((1 - a0) * 1.8, 0, 1)[..., None] * (~solid)[..., None]
+    rgb = np.clip(rgb * (1 - wr) + filled * wr, 0, 255)
+    # matte: erode, soften, and cut the faintest fringe
+    alpha = ndimage.minimum_filter(a0, size=3)
+    alpha = ndimage.gaussian_filter(alpha, 0.7)
+    alpha = np.clip((alpha - 0.12) / 0.88, 0, 1)
     out = Image.fromarray(np.dstack([rgb, alpha * 255]).astype(np.uint8), "RGBA")
     if crop == "v":
         bbox = out.getchannel("A").point(lambda v: 255 if v > 24 else 0).getbbox()
@@ -127,9 +154,9 @@ def main():
     for s in ("spring", "summer", "autumn", "winter"):
         entry = {}
         if (im := load(f"shore-{s}")):
-            entry["shore"] = save(key_auto(shrink(im), "v"), f"shore-{s}", True)
+            entry["shore"] = save(key_auto(shrink(im), "v", strict=s != "winter"), f"shore-{s}", True)
         if (im := load(f"branch-{s}")):
-            entry["branch"] = save(key_auto(shrink(im)), f"branch-{s}", True)
+            entry["branch"] = save(key_auto(shrink(im), strict=s != "winter"), f"branch-{s}", True)
         if entry:
             manifest["seasons"][s] = entry
     (ROOT / "scene.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")

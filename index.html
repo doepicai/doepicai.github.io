@@ -83,17 +83,20 @@ img{max-width:100%}
 @keyframes shim{to{transform:scaleX(.82)}}
 .fb-ripples{position:absolute;inset:0;opacity:.35;background:repeating-linear-gradient(180deg,transparent 0 13px,rgba(255,200,200,.35) 13px 14px);animation:rip 9s linear infinite}
 @keyframes rip{to{background-position:0 28px}}
-.veil{position:fixed;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(180deg,rgba(5,31,57,.0),rgba(5,31,57,.55));opacity:var(--veil,0)}
+.veil{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#051f39,#0a1a44 55%,#051f39);opacity:var(--veil,.3)}
 .sprites{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .gs{position:absolute;mix-blend-mode:screen;will-change:transform;animation:fl 9s ease-in-out infinite alternate}
 .gs img{display:block;width:100%;height:auto;filter:drop-shadow(0 20px 30px rgba(5,10,40,.5))}
 @keyframes fl{to{margin-top:-16px}}
-.fx{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(5,31,57,.55))}
+.fx{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 50%,transparent 45%,rgba(5,31,57,.7))}
+h2,.k,.lead,footer,.count{text-shadow:0 2px 18px rgba(5,10,40,.9),0 0 4px rgba(5,10,40,.6)}
+.hcard{background:linear-gradient(150deg,rgba(255,164,164,.1),rgba(136,47,143,.16) 36%,rgba(5,31,57,.86))}
+.sub,.val p,.feat p,.panel,.contact p{text-shadow:none}
 
 /* ================= glass ================= */
 .glass{position:relative;border-radius:22px;
-  background:linear-gradient(150deg,rgba(255,164,164,.17),rgba(136,47,143,.14) 36%,rgba(5,31,57,.6));
-  backdrop-filter:blur(18px) saturate(1.55);-webkit-backdrop-filter:blur(18px) saturate(1.55);
+  background:linear-gradient(150deg,rgba(255,164,164,.17),rgba(136,47,143,.14) 36%,rgba(5,31,57,.8));
+  backdrop-filter:blur(22px) saturate(1.35) brightness(.72);-webkit-backdrop-filter:blur(22px) saturate(1.35) brightness(.72);
   box-shadow:inset 0 1px 0 rgba(255,241,238,.55),inset 0 -16px 30px rgba(5,31,57,.32),0 32px 60px -26px rgba(5,10,40,.85)}
 .glass:before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
   background:linear-gradient(145deg,rgba(255,241,238,.75),rgba(255,164,164,.14) 32%,rgba(197,58,157,.14) 68%,rgba(255,164,164,.5));
@@ -465,7 +468,7 @@ function apply(){
   });
   document.querySelectorAll(".br").forEach(e=>{const d=+e.dataset.d;e.style.transform=`translate3d(${-px*d*90}px,${-py*d*60-sy*d*.12}px,0)${e.classList.contains("r")?" scaleX(-1)":""}`});
   document.querySelectorAll(".gs").forEach(e=>{const d=+e.dataset.d;e.style.transform=`translate3d(${-px*d*140}px,${-py*d*100-sy*d*.5}px,0)`});
-  root.style.setProperty("--veil",Math.min(.5,sy/(vh*2.2)));
+  root.style.setProperty("--veil",.3+.34*Math.min(1,sy/(vh*1.1)));
 }
 
 /* ---- falling nature: petals, fireflies, leaves, snow (canvas, follows the season weights) ---- */
