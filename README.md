@@ -1,35 +1,49 @@
+<div align="center">
+
+<a href="https://doepic.ai"><img src="img/logo.svg" alt="doepic.ai" width="120"></a>
+
 # doepic.ai
 
-Личная витрина проектов. Статический сайт без сборки и без внешних скриптов.
+**Personal project showcase: apps, services and experiments that feel good to use.**
 
-## Дизайн
+[Open the site](https://doepic.ai)
 
-Сейчас: **Four Seasons Low-Poly** — Dawn City с четырьмя временами года, которые сменяют друг друга при скролле (весна → лето → осень → зима): прибрежные деревья, ветви в углах, цветокоррекция, лепестки/светлячки/листья/снег. Прошлый вариант: **Dawn City** — 3D glass поверх слоёв сцены (небо, солнце, три слоя города, вода, стеклянные спрайты). Палитра `#051f39 #28225d #4a2480 #882f8f #c53a9d #e2648f #ff8e80 #ffa4a4`.
+</div>
 
-Прошлые дизайны восстанавливаются из git:
+A static site with no build step and no third-party scripts, served by GitHub Pages. The interface is available in English and Russian.
 
-| Дизайн | Тег | Ветка |
+## Design
+
+Current: **Four Seasons Low-Poly**. A dawn city whose four seasons change as you scroll (spring → summer → autumn → winter): shore trees, colour grading and petals, fireflies, leaves and snow. Palette: `#051f39 #28225d #4a2480 #882f8f #c53a9d #e2648f #ff8e80 #ffa4a4`.
+
+The previous design, **Dawn City**, was 3D glass over layered scenery (sky, sun, three city layers, water, glass sprites).
+
+Earlier designs can be restored from git:
+
+| Design | Tag | Branch |
 |---|---|---|
 | Glass 3D (v1) | `design-glass-v1` | `design/glass-v1` |
-| Sunset, плоский (v2) | `design-sunset-v2` | `design/sunset-v2` |
+| Sunset, flat (v2) | `design-sunset-v2` | `design/sunset-v2` |
 
-Посмотреть: `git checkout design-sunset-v2` (вернуться: `git checkout main`).
-Вернуть на сайт: `git checkout design-sunset-v2 -- index.html img/social.png`, закоммитить и запушить.
+To preview one: `git checkout design-sunset-v2` (to return: `git checkout main`).
+To put it back on the site: `git checkout design-sunset-v2 -- index.html img/social.png`, then commit and push.
 
-## Графика Gemini (low-poly)
+## Artwork (Gemini, low-poly)
 
-Сцена лёгкая: небо и вода рисует CSS, остальное — 8 низкополигональных картинок из Gemini, всего около 400 КБ (раньше 3,6 МБ). Первый экран тянет около 190 КБ: солнце, горы, два слоя города и весенний берег. Остальные три берега подгружаются, когда браузер свободен.
+The scene is light: CSS draws the sky and water, and the rest is 8 low-poly images generated with Gemini, about 400 KB in total (down from 3.6 MB). The first screen loads about 190 KB: sun, hills, two city layers and the spring shore. The other three shores load when the browser is idle.
 
-Как создаётся графика (стандартный путь для любой новой графики):
-1. `python tools/receiver.py 8777` поднимает приёмник на 127.0.0.1 (токен печатается при старте, принимаются только картинки).
-2. Картинка генерируется в Gemini во встроенном браузере. Страница Gemini не даёт fetch на чужие адреса, поэтому картинка рисуется в canvas, кодируется в base64 и передаётся фрагментом URL на `http://127.0.0.1:8777/recv.html#имя.ext.данные`; страница приёмника загружает файл в `gemini-raw/`.
-3. `python tools/import_gemini.py` (Pillow, numpy, scipy): вырезает синий фон без каёмок, ужимает до нужной ширины, сохраняет WebP и обновляет `scene.json`.
+How artwork is produced (the standard path for any new image):
 
-Промпты: `docs/gemini/PROMPTS.md`. Прошлая, тяжёлая версия сцены (стекло, 3,6 МБ) сохранена в теге `design-seasons-v4`.
-## Как добавить проект
+1. `python tools/receiver.py 8777` starts a receiver on 127.0.0.1. It prints a token on startup and accepts images only.
+2. The image is generated in Gemini in the built-in browser. The Gemini page does not allow `fetch` to other origins, so the image is drawn to a canvas, base64-encoded and passed in the URL fragment to `http://127.0.0.1:8777/recv.html#name.ext.data`. The receiver page saves the file to `gemini-raw/`.
+3. `python tools/import_gemini.py` (Pillow, NumPy, SciPy) removes the blue background without fringes, resizes to the target width, saves WebP and updates `scene.json`.
 
-Новый объект в массив `PROJECTS` в начале скрипта `index.html` (картинки в `img/`). Релизы подтягиваются из GitHub (`FEEDS`).
+Prompts are in `docs/gemini/PROMPTS.md`. The previous, heavier glass scene (3.6 MB) is kept in the `design-seasons-v4` tag.
 
-## Логотип
+## Adding a project
 
-`img/logo.svg` (иконка), `favicon.svg`, `img/logo.png`, превью `img/social.png`. Логотип общий для всех дизайнов.
+Add an object to the `PROJECTS` array at the start of the script in `index.html` (images go in `img/`). Releases are pulled from GitHub (see `FEEDS`).
+
+## Logo
+
+`img/logo.svg` (icon), `favicon.svg`, `img/avatar.png` (square version for profile pictures) and `img/social.jpg` (link preview). The logo is shared by all designs.
