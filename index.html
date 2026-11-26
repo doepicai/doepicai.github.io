@@ -80,7 +80,7 @@ img{max-width:100%}
 .fx{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 50%,transparent 45%,rgba(5,31,57,.7))}
 h2,.k,.lead,footer,.count{text-shadow:0 2px 18px rgba(5,10,40,.9),0 0 4px rgba(5,10,40,.6)}
 .hcard{background:linear-gradient(150deg,rgba(255,164,164,.1),rgba(136,47,143,.16) 36%,rgba(5,31,57,.86))}
-.sub,.val p,.feat p,.panel,.contact p{text-shadow:none}
+.sub,.feat p,.panel,.contact p{text-shadow:none}
 
 /* ================= glass ================= */
 .glass{position:relative;border-radius:18px;
@@ -166,31 +166,7 @@ h3{font-family:var(--disp)}
 .soon span{display:block;color:var(--muted);font-size:13.5px;line-height:1.45}
 @media(max-width:820px){.feat{grid-template-columns:1fr}.feat .tx{padding:6px 18px 18px}}
 
-.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
-.val{display:grid;grid-template-columns:auto 1fr;align-content:start;align-items:center;column-gap:12px;row-gap:8px;padding:16px 18px}
-.val .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,164,164,.4),rgba(136,47,143,.4));box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 20px -8px rgba(5,10,40,.7);transform:translateZ(36px)}
-.val .ic svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.val h3{margin:0;font-size:17px}
-.val p{grid-column:1/-1;margin:0;color:var(--muted);font-size:14px;line-height:1.5}
-
 .panel{padding:4px 20px}
-.flow{display:grid;grid-template-columns:repeat(6,1fr);padding:20px 16px 18px}
-.st{position:relative;padding:0 7px;text-align:center}
-.st:before{content:"";position:absolute;top:16px;left:50%;width:100%;height:2px;background:linear-gradient(90deg,var(--coral),var(--magenta));opacity:.5}
-.st:last-child:before{display:none}
-.nd{position:relative;z-index:1;display:grid;place-items:center;width:34px;height:34px;margin:0 auto 9px;border-radius:50%;font:700 12px var(--mono);color:var(--navy);background:linear-gradient(135deg,var(--blush),var(--coral));box-shadow:0 8px 18px -6px rgba(5,10,40,.7),inset 0 1px 0 rgba(255,255,255,.6);animation:ndp 7s ease-in-out infinite;animation-delay:calc(var(--i)*.9s)}
-@keyframes ndp{0%,34%,100%{box-shadow:0 8px 18px -6px rgba(5,10,40,.7),inset 0 1px 0 rgba(255,255,255,.6)}12%{box-shadow:0 0 0 9px rgba(255,142,128,.28),0 0 28px rgba(255,142,128,.75),inset 0 1px 0 rgba(255,255,255,.6)}}
-.st h3{margin:0 0 3px;font-size:15.5px}
-.st p{margin:0 0 7px;color:var(--muted);font-size:13px;line-height:1.45}
-.tg{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.tg span{font:500 11px var(--mono);border:1px solid rgba(255,164,164,.3);border-radius:999px;padding:2px 10px;background:rgba(255,241,238,.06)}
-@media(max-width:900px){
-  .flow{grid-template-columns:1fr;gap:0;padding:18px 16px 6px}
-  .st{text-align:left;padding:0 0 14px 48px}
-  .st:before{left:16px;top:34px;width:2px;height:calc(100% - 34px);background:linear-gradient(180deg,var(--coral),var(--magenta))}
-  .nd{position:absolute;left:0;top:0;margin:0}
-  .tg{justify-content:flex-start}
-}
 .fi{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,164,164,.16);text-decoration:none;transition:.2s}
 .fi:last-child{border-bottom:0}
 .fi:hover{padding-left:8px}
@@ -233,7 +209,6 @@ footer a:hover{text-decoration:underline}
   <a class="brand" href="#"><img src="img/logo.svg" alt=""><span class="word grad">doepic<b>.ai</b></span></a>
   <div class="sp"></div>
   <a class="l" href="#work" data-i="nav_w">Проекты</a>
-  <a class="l" href="#approach" data-i="nav_a">Подход</a>
   <a class="l" href="#updates" data-i="nav_u">Новости</a>
   <button class="lang" id="lang" aria-label="Language">EN</button>
   <a class="pill" href="#contact" data-i="nav_c">Связаться</a>
@@ -263,23 +238,9 @@ footer a:hover{text-decoration:underline}
   <div class="soon glass rv"><div class="pl">+</div><div><b data-i="soon">Скоро здесь новое</b><span data-i="soon_p">Следующий проект уже в работе.</span></div></div>
 </div></section>
 
-<section id="approach"><div class="wrap">
-  <p class="k rv" data-i="k_a">Подход</p><h2 class="rv" data-i="a_h">Три правила</h2>
-  <div class="vals">
-    <div class="val glass tilt rv"><div class="ic"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></div><h3 data-i="r1h">Открыто</h3><p data-i="r1p">Код живёт на GitHub. Смотрите, как всё устроено.</p></div>
-    <div class="val glass tilt rv"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h3 data-i="r2h">Тихо</h3><p data-i="r2p">Ни рекламы, ни слежки, ни лишних скриптов.</p></div>
-    <div class="val glass tilt rv"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 data-i="r3h">Не спеша</h3><p data-i="r3p">Выходит, когда готово, и работает как задумано.</p></div>
-  </div>
-</div></section>
-
 <section id="updates"><div class="wrap">
   <p class="k rv" data-i="k_u">Новости</p><h2 class="rv" data-i="u_h">Последние релизы</h2>
   <div class="panel glass tilt rv"><div id="feed"></div></div>
-</div></section>
-
-<section id="how"><div class="wrap">
-  <p class="k rv" data-i="k_f">Процесс</p><h2 class="rv" data-i="f_h">Как рождается проект</h2>
-  <div class="flow glass rv" id="flow"></div>
 </div></section>
 
 <section id="contactsec"><div class="wrap">
@@ -307,22 +268,9 @@ const PROJECTS=[
   links:[{ru:"Открыть сайт",en:"Open site",href:"https://vpn.doepic.ai",primary:true},{ru:"Код",en:"Code",href:"https://github.com/arsenikt/WokokVPN-App"}]}
 ];
 const FEEDS=[{name:"Wokok VPN",repo:"arsenikt/WokokVPN-App"},{name:"Wokok для Chrome",en:"Wokok for Chrome",repo:"arsenikt/WokokVPN-Chrome"}];
-/* how a project is made: one line per step, tools are real (Wokok is built exactly like this) */
-const STEPS=[
- {ru:"Идея",en:"Idea",dr:"Что-то, чем самому хочется пользоваться",de:"Something I want to use myself",tags:[]},
- {ru:"Графика",en:"Graphics",dr:"Рисую в Gemini: низкополигональные модели",de:"Drawn in Gemini: low-poly models",tags:["Gemini","low-poly"]},
- {ru:"Код",en:"Code",dr:"Одна кодовая база на все платформы",de:"One codebase for every platform",tags:["Flutter","Dart"]},
- {ru:"Ядро",en:"Core",dr:"Сеть и шифрование под капотом",de:"Networking and encryption under the hood",tags:["sing-box","VLESS Reality"]},
- {ru:"Релиз",en:"Release",dr:"Сборка и выкладка по тегу",de:"Built and published from a tag",tags:["GitHub Actions"]},
- {ru:"Сайт",en:"Site",dr:"Статика без трекеров",de:"Static, no trackers",tags:["GitHub Pages"]}
-];
-function renderFlow(){
-  document.querySelector("#flow").innerHTML=STEPS.map((s,i)=>`<div class="st" style="--i:${i}"><span class="nd">${String(i+1).padStart(2,"0")}</span><h3>${L==="ru"?s.ru:s.en}</h3><p>${L==="ru"?s.dr:s.de}</p>${s.tags.length?`<div class="tg">${s.tags.map(x=>`<span>${x}</span>`).join("")}</div>`:""}</div>`).join("");
-}
-
 const I={
-ru:{nav_w:"Проекты",nav_a:"Подход",nav_u:"Новости",nav_c:"Связаться",tag:"Личная витрина проектов",h1a:"Делаю штуки,",h1b:"которыми приятно пользоваться",sub:"Приложения, сервисы и эксперименты. Открытый код, без трекеров.",cta1:"Смотреть проекты",m1:"проект",m2:"платформ",m3:"трекеров",k_w:"Проекты",w_h:"Избранное",soon:"Скоро здесь новое",soon_p:"Следующий проект уже в работе.",k_a:"Подход",a_h:"Три правила",r1h:"Открыто",r1p:"Код живёт на GitHub. Смотрите, как всё устроено.",r2h:"Тихо",r2p:"Ни рекламы, ни слежки, ни лишних скриптов.",r3h:"Не спеша",r3p:"Выходит, когда готово, и работает как задумано.",k_u:"Новости",u_h:"Последние релизы",k_f:"Процесс",f_h:"Как рождается проект",c_a:"Следите, что будет дальше",c_p:"Новое появляется на GitHub первым. А поговорить можно в LinkedIn.",c_btn:"Открыть GitHub",foot:"Сделано с душой",up:"Наверх ↑",loading:"Загружаю…",none:"Релизов пока нет",mq:["Приложения","Сервисы","Эксперименты","Открытый код","Без трекеров"]},
-en:{nav_w:"Work",nav_a:"Approach",nav_u:"Updates",nav_c:"Contact",tag:"Personal project showcase",h1a:"I make things",h1b:"that feel good to use",sub:"Apps, services and experiments. Open source, no trackers.",cta1:"See projects",m1:"project",m2:"platforms",m3:"trackers",k_w:"Work",w_h:"Selected",soon:"Something new soon",soon_p:"The next project is in the works.",k_a:"Approach",a_h:"Three rules",r1h:"Open",r1p:"The code lives on GitHub. See how it all works.",r2h:"Quiet",r2p:"No ads, no tracking, no extra scripts.",r3h:"Unhurried",r3p:"Ships when it's ready and works as intended.",k_u:"Updates",u_h:"Latest releases",k_f:"Process",f_h:"How a project is born",c_a:"Follow along, see what's next",c_p:"New things land on GitHub first. And you can talk to me on LinkedIn.",c_btn:"Open GitHub",foot:"Made with heart",up:"Back to top ↑",loading:"Loading…",none:"No releases yet",mq:["Apps","Services","Experiments","Open source","No trackers"]}};
+ru:{nav_w:"Проекты",nav_u:"Новости",nav_c:"Связаться",tag:"Личная витрина проектов",h1a:"Делаю штуки,",h1b:"которыми приятно пользоваться",sub:"Приложения, сервисы и эксперименты. Открытый код, без трекеров.",cta1:"Смотреть проекты",m1:"проект",m2:"платформ",m3:"трекеров",k_w:"Проекты",w_h:"Избранное",soon:"Скоро здесь новое",soon_p:"Следующий проект уже в работе.",k_u:"Новости",u_h:"Последние релизы",c_a:"Следите, что будет дальше",c_p:"Новое появляется на GitHub первым. А поговорить можно в LinkedIn.",c_btn:"Открыть GitHub",foot:"Сделано с душой",up:"Наверх ↑",loading:"Загружаю…",none:"Релизов пока нет",mq:["Приложения","Сервисы","Эксперименты","Открытый код","Без трекеров"]},
+en:{nav_w:"Work",nav_u:"Updates",nav_c:"Contact",tag:"Personal project showcase",h1a:"I make things",h1b:"that feel good to use",sub:"Apps, services and experiments. Open source, no trackers.",cta1:"See projects",m1:"project",m2:"platforms",m3:"trackers",k_w:"Work",w_h:"Selected",soon:"Something new soon",soon_p:"The next project is in the works.",k_u:"Updates",u_h:"Latest releases",c_a:"Follow along, see what's next",c_p:"New things land on GitHub first. And you can talk to me on LinkedIn.",c_btn:"Open GitHub",foot:"Made with heart",up:"Back to top ↑",loading:"Loading…",none:"No releases yet",mq:["Apps","Services","Experiments","Open source","No trackers"]}};
 let L=(localStorage.getItem("lang")||(navigator.language||"ru")).startsWith("ru")?"ru":"en";
 const t=k=>I[L][k]??k;
 
@@ -354,7 +302,7 @@ function render(){
   document.documentElement.lang=L;
   const unit=I[L].mq.map(x=>`<span>${x}</span><b>✦</b>`).join("");
   document.querySelector("#marq").innerHTML=unit+unit+unit+unit;
-  renderWork(); renderFeed(); renderFlow();
+  renderWork(); renderFeed();
   if(typeof updSeasonUI==="function") updSeasonUI();
 }
 document.querySelector("#lang").onclick=()=>{L=L==="ru"?"en":"ru";localStorage.setItem("lang",L);render()};
