@@ -142,6 +142,7 @@ section{padding:44px 0 0}
 h2{font:700 clamp(22px,2.4vw,28px)/1.2 var(--disp);letter-spacing:-.02em;margin:0 0 16px}
 h3{font-family:var(--disp)}
 
+#featBox{display:grid;gap:16px}
 .feat{display:grid;grid-template-columns:1.1fr 1fr;overflow:hidden;min-height:250px}
 .feat .img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
 .feat .img{position:relative;min-height:200px;margin:9px;border-radius:12px;background:#0b0618 center/cover no-repeat;box-shadow:inset 0 0 0 1px rgba(255,164,164,.25),0 18px 40px -16px rgba(5,10,40,.9);transform:translateZ(30px)}
@@ -227,7 +228,7 @@ footer a:hover{text-decoration:underline}
       <a class="btn p" href="#work"><span data-i="cta1">Смотреть проекты</span><svg viewBox="0 0 24 24"><path d="M12 4l-1.4 1.4 5.6 5.6H4v2h12.2l-5.6 5.6L12 20l8-8z"/></svg></a>
       <a class="btn" href="https://github.com/doepicai">GitHub</a>
     </div>
-    <div class="stats"><span><b id="mCount">1</b> <i data-i="m1" style="font-style:normal">проект</i></span><span><b>5</b> <i data-i="m2" style="font-style:normal">платформ</i></span><span><b>0</b> <i data-i="m3" style="font-style:normal">трекеров</i></span></div>
+    <div class="stats"><span><b id="mCount">2</b> <i data-i="m1" style="font-style:normal">проекта</i></span><span><b>5</b> <i data-i="m2" style="font-style:normal">платформ</i></span><span><b>0</b> <i data-i="m3" style="font-style:normal">трекеров</i></span></div>
     </div>
   </div>
 </div></header>
@@ -253,31 +254,35 @@ footer a:hover{text-decoration:underline}
 
 <footer><div class="wrap">
   © <span id="yr"></span> doepic.ai · <span data-i="foot">Сделано с душой</span><br>
-  <span style="display:inline-block;margin-top:8px"><a href="https://github.com/doepicai">GitHub</a><a href="https://www.linkedin.com/in/arsenik/" rel="me noopener" target="_blank">LinkedIn</a><a href="https://wokok.doepic.ai">Wokok Box</a><a href="#top" data-i="up">Наверх ↑</a></span>
+  <span style="display:inline-block;margin-top:8px"><a href="https://github.com/doepicai">GitHub</a><a href="https://www.linkedin.com/in/arsenik/" rel="me noopener" target="_blank">LinkedIn</a><a href="https://aybben.doepic.ai">AybBen</a><a href="https://wokok.doepic.ai">Wokok Box</a><a href="#top" data-i="up">Наверх ↑</a></span>
 </div></footer>
 
 <script>
 /* ============ ПРОЕКТЫ: добавляйте сюда ============ */
 const PROJECTS=[
+ {name:"AybBen",year:"2026",image:"img/aybben.webp",release:"doepicai/aybben-site",
+  tags:["Armenian","Mini-games","Android","Windows","iOS"],
+  ru:"Современный армянский в коротких мини-играх: алфавит Маштоца, живые слова и фразы, озвучка и словарь с повторениями. На русском и английском.",
+  en:"Modern Armenian in short mini-games: Mashtots' alphabet, everyday words and phrases, audio and a spaced-repetition dictionary. In English and Russian.",
+  links:[{ru:"Открыть сайт",en:"Open site",href:"https://aybben.doepic.ai",primary:true}]},
  {name:"Wokok Box",year:"2026",image:"img/wokok-box.webp",release:"arsenikt/WokokVPN-App",
   tags:["VPN","Tunnel","Deploy","Spy Check","Guard","Open source"],
   ru:"Бывший Wokok VPN. Свой VPN, туннели, деплой, проверка слежки и защита от мошенников в одном приложении. Ранний релиз: новые функции ещё проверяются.",
   en:"Formerly Wokok VPN. Your own VPN, tunnels, deploys, tracking checks and scam protection in one app. Early release: the new features are still being tested.",
   links:[{ru:"Открыть сайт",en:"Open site",href:"https://wokok.doepic.ai",primary:true},{ru:"Код",en:"Code",href:"https://github.com/arsenikt/WokokVPN-App"}]}
 ];
-const FEEDS=[{name:"Wokok Box",repo:"arsenikt/WokokVPN-App"},{name:"Wokok для Chrome",en:"Wokok for Chrome",repo:"arsenikt/WokokVPN-Chrome"}];
+const FEEDS=[{name:"AybBen",repo:"doepicai/aybben-site"},{name:"Wokok Box",repo:"arsenikt/WokokVPN-App"},{name:"Wokok для Chrome",en:"Wokok for Chrome",repo:"arsenikt/WokokVPN-Chrome"}];
 const I={
-ru:{nav_w:"Проекты",nav_u:"Новости",nav_c:"Связаться",tag:"Личная витрина проектов",h1a:"Делаю штуки,",h1b:"которыми приятно пользоваться",sub:"Приложения, сервисы и эксперименты. Открытый код, без трекеров.",cta1:"Смотреть проекты",m1:"проект",m2:"платформ",m3:"трекеров",k_w:"Проекты",w_h:"Избранное",k_u:"Новости",u_h:"Последние релизы",k_c:"Контакты",c_h:"Связаться",foot:"Сделано с душой",up:"Наверх ↑",loading:"Загружаю…",none:"Релизов пока нет"},
-en:{nav_w:"Work",nav_u:"Updates",nav_c:"Contact",tag:"Personal project showcase",h1a:"I make things",h1b:"that feel good to use",sub:"Apps, services and experiments. Open source, no trackers.",cta1:"See projects",m1:"project",m2:"platforms",m3:"trackers",k_w:"Work",w_h:"Selected",k_u:"Updates",u_h:"Latest releases",k_c:"Contact",c_h:"Get in touch",foot:"Made with heart",up:"Back to top ↑",loading:"Loading…",none:"No releases yet"}};
+ru:{nav_w:"Проекты",nav_u:"Новости",nav_c:"Связаться",tag:"Личная витрина проектов",h1a:"Делаю штуки,",h1b:"которыми приятно пользоваться",sub:"Приложения, сервисы и эксперименты. Открытый код, без трекеров.",cta1:"Смотреть проекты",m1:"проекта",m2:"платформ",m3:"трекеров",k_w:"Проекты",w_h:"Избранное",k_u:"Новости",u_h:"Последние релизы",k_c:"Контакты",c_h:"Связаться",foot:"Сделано с душой",up:"Наверх ↑",loading:"Загружаю…",none:"Релизов пока нет"},
+en:{nav_w:"Work",nav_u:"Updates",nav_c:"Contact",tag:"Personal project showcase",h1a:"I make things",h1b:"that feel good to use",sub:"Apps, services and experiments. Open source, no trackers.",cta1:"See projects",m1:"projects",m2:"platforms",m3:"trackers",k_w:"Work",w_h:"Selected",k_u:"Updates",u_h:"Latest releases",k_c:"Contact",c_h:"Get in touch",foot:"Made with heart",up:"Back to top ↑",loading:"Loading…",none:"No releases yet"}};
 let L=(localStorage.getItem("lang")||(navigator.language||"ru")).startsWith("ru")?"ru":"en";
 const t=k=>I[L][k]??k;
 
 function renderWork(){
-  const f=PROJECTS[0];
   document.querySelector("#mCount").textContent=PROJECTS.length;
   const fb=document.querySelector("#featBox");
-  fb.innerHTML=`<article class="feat glass tilt rv"><div class="img"><img src="${f.image}" alt="${f.name}" loading="lazy" decoding="async" width="1600" height="800"></div><div class="tx"><span class="num">01 / ${f.year}</span><div class="tags" data-tags>${f.tags.map(x=>`<span>${x}</span>`).join("")}</div><h3>${f.name}</h3><p>${f[L]}</p><div class="go">${f.links.map(l=>`<a class="btn${l.primary?" p":""}" href="${l.href}">${l[L]}</a>`).join("")}</div></div></article>`;
-  if(f.release) badge(f,fb);
+  fb.innerHTML=PROJECTS.map((f,i)=>`<article class="feat glass tilt rv"><div class="img"><img src="${f.image}" alt="${f.name}" loading="lazy" decoding="async" width="1600" height="800"></div><div class="tx"><span class="num">${String(i+1).padStart(2,"0")} / ${f.year}</span><div class="tags" data-tags>${f.tags.map(x=>`<span>${x}</span>`).join("")}</div><h3>${f.name}</h3><p>${f[L]}</p><div class="go">${f.links.map(l=>`<a class="btn${l.primary?" p":""}" href="${l.href}">${l[L]}</a>`).join("")}</div></div></article>`).join("");
+  fb.querySelectorAll("article").forEach((box,i)=>{if(PROJECTS[i].release) badge(PROJECTS[i],box)});
   bindTilt(); reveal();
 }
 async function badge(p,box){
